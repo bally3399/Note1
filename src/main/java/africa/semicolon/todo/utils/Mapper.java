@@ -1,5 +1,6 @@
 package africa.semicolon.todo.utils;
 
+import africa.semicolon.todo.data.model.Status;
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.data.model.Todo;
 import africa.semicolon.todo.dtos.request.CreateTaskRequest;
@@ -20,7 +21,6 @@ public class Mapper {
     public static UserResponse map(Todo savedTodo){
         UserResponse response = new UserResponse();
         response.setUsername(savedTodo.getUsername());
-        response.setPassword(savedTodo.getPassword());
         response.setMessage("Successful");
         return response;
     }
@@ -37,6 +37,7 @@ public class Mapper {
         task.setTimeCreated(LocalDateTime.now());
         task.setAuthor(createTaskRequest.getAuthor());
         task.setId(task.getId());
+        task.setStatus(createTaskRequest.getStatus());
         return task;
     }
     public static TaskResponse map(Task savedTask){
@@ -46,6 +47,7 @@ public class Mapper {
         response.setTimeCreated(savedTask.getTimeCreated());
         response.setTimeDone(savedTask.getTimeDone());
         response.setAuthor(savedTask.getAuthor());
+        response.setStatus(savedTask.getStatus());
         return response;
     }
 }

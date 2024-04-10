@@ -6,14 +6,14 @@ import africa.semicolon.todo.dtos.request.*;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.dtos.response.UserResponse;
 
-import javax.swing.*;
+import java.util.List;
 
 public interface TodoServices {
     UserResponse registerUser(RegisterUserRequest registerUserRequest);
 
     UserResponse login(LoginUserRequest loginUserRequest);
 
-    UserResponse logout(LogoutRequest logoutRequest);
+    String logout(LogoutRequest logoutRequest);
 
     Todo findByUser(String bally);
 
@@ -24,4 +24,10 @@ public interface TodoServices {
     TaskResponse updateNote(UpdateTaskRequest updateNoteRequest);
 
     String deleteTask(CreateTaskRequest createTaskRequest);
+
+    List<Task> getAllTask();
+
+    TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest);
+
+    TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest);
 }

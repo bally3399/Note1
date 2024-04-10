@@ -1,10 +1,11 @@
 package africa.semicolon.todo.services;
 
+import africa.semicolon.todo.data.model.Status;
 import africa.semicolon.todo.data.model.Task;
-import africa.semicolon.todo.data.model.Todo;
 import africa.semicolon.todo.data.repositories.TaskRepository;
-import africa.semicolon.todo.data.repositories.TodoRepository;
 import africa.semicolon.todo.dtos.request.CreateTaskRequest;
+import africa.semicolon.todo.dtos.request.TaskCompletedRequest;
+import africa.semicolon.todo.dtos.request.TaskInProgressRequest;
 import africa.semicolon.todo.dtos.request.UpdateTaskRequest;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.exceptions.TaskNotFoundException;
@@ -20,18 +21,14 @@ import static africa.semicolon.todo.utils.Mapper.map;
 public class TaskServicesImpl implements TaskServices{
     @Autowired
     private TaskRepository taskRepository;
-    @Autowired
-    private TodoRepository todoRepository;
-
     @Override
     public TaskResponse createTask(CreateTaskRequest createTaskRequest) {
         ValidateNote(createTaskRequest);
-        Todo todo = todoRepository.findByUsername(createTaskRequest.getAuthor());
         for(Task tasks : taskRepository.findAll()){
             if(tasks.getTitle().equals(createTaskRequest.getTitle())) throw new TaskNotFoundException("Task Title Already Exist");
         }
-        if(todo != null) todo.setLoggedIn(true);
         Task task = map(createTaskRequest);
+        task.setStatus(Status.STARTED);
         TaskResponse response = map(task);
         taskRepository.save(task);
         return response;
@@ -62,12 +59,14 @@ public class TaskServicesImpl implements TaskServices{
             updateTask.setTitle(task.getNewTitle());
             updateTask.setAuthor(task.getAuthor());
             updateTask.setDescription(task.getNewDescription());
+            updateTask.setStatus(task.getNewStatus());
         }
         Task savedTask = taskRepository.save(updateTask);
         TaskResponse taskResponse = new TaskResponse();
         taskResponse.setTitle(savedTask.getTitle());
         taskResponse.setAuthor(savedTask.getAuthor());
         taskResponse.setDescription(savedTask.getDescription());
+        taskResponse.setStatus(savedTask.getStatus());
         return taskResponse;
     }
 
@@ -85,6 +84,22 @@ public class TaskServicesImpl implements TaskServices{
             return "Task Successfully Deleted";
         }
         throw new TaskNotFoundException("Note not found");
+    }
+
+    @Override
+    public TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest) {
+        if(inProgressRequest.getTitle().trim().isEmpty())throw new InputMismatchException("Title not found");
+        Task foundTask = taskRepository.findByTitle(inProgressRequest.getTitle());
+        foundTask.setStatus(Status.IN_PROGRESS);
+        return map(foundTask);
+    }
+
+    @Override
+    public TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest) {
+        if(taskCompletedRequest.getTitle().trim().isEmpty())throw new InputMismatchException("Title not found");
+        Task foundTask = taskRepository.findByTitle(taskCompletedRequest.getTitle());
+        foundTask.setStatus(Status.COMPLETED);
+        return map(foundTask);
     }
 
     private static void validateUpdate(UpdateTaskRequest task) {

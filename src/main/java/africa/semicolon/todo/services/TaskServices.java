@@ -2,6 +2,8 @@ package africa.semicolon.todo.services;
 
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.dtos.request.CreateTaskRequest;
+import africa.semicolon.todo.dtos.request.TaskCompletedRequest;
+import africa.semicolon.todo.dtos.request.TaskInProgressRequest;
 import africa.semicolon.todo.dtos.request.UpdateTaskRequest;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 
@@ -19,4 +21,8 @@ public interface TaskServices {
     List<Task> getAllTask();
 
     String deleteTask(CreateTaskRequest createTaskRequest);
+
+    TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest);
+
+    TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest);
 }

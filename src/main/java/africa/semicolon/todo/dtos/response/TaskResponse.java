@@ -1,6 +1,7 @@
 package africa.semicolon.todo.dtos.response;
 
 import africa.semicolon.todo.data.model.Level;
+import africa.semicolon.todo.data.model.Status;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 public class TaskResponse {
     private String title;
     private LocalDateTime timeCreated = LocalDateTime.now();
-    private boolean status = false;
+    private Status status;
     private Level description;
     private LocalDateTime timeDone = LocalDateTime.now();
     private String author;

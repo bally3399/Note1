@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.InputMismatchException;
+import java.util.List;
 
 import static africa.semicolon.todo.utils.Mapper.map;
 
@@ -56,13 +57,11 @@ public class TodoServicesImpl implements TodoServices{
     }
 
     @Override
-    public UserResponse logout(LogoutRequest logoutRequest) {
+    public String logout(LogoutRequest logoutRequest) {
         Todo todo = todoRepository.findByUsername(logoutRequest.getUsername());
         if (todo == null) throw new IncorrectPassword("Username is not valid");
-        UserResponse userResponse = new UserResponse();
-        userResponse.setMessage("Logout successful");
         todo.setLoggedIn(false);
-        return userResponse;
+        return "LoggedOut Successful";
     }
 
     @Override
@@ -72,6 +71,8 @@ public class TodoServicesImpl implements TodoServices{
 
     @Override
     public TaskResponse createTask(CreateTaskRequest createTaskRequest) {
+        Todo todo = todoRepository.findByUsername(createTaskRequest.getAuthor());
+        if(todo != null) todo.setLoggedIn(true);
         return taskServices.createTask(createTaskRequest);
     }
 
@@ -93,6 +94,21 @@ public class TodoServicesImpl implements TodoServices{
     @Override
     public String deleteTask(CreateTaskRequest createTaskRequest) {
         return taskServices.deleteTask(createTaskRequest);
+    }
+
+    @Override
+    public List<Task> getAllTask() {
+        return taskServices.getAllTask();
+    }
+
+    @Override
+    public TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest) {
+        return taskServices.taskInProgress(inProgressRequest);
+    }
+
+    @Override
+    public TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest) {
+        return taskServices.taskCompleted(taskCompletedRequest);
     }
 
     private static void validateLogin(LoginUserRequest loginUserRequest) {
