@@ -35,23 +35,6 @@ public class TaskServicesImpl implements TaskServices{
     }
 
     @Override
-    public List<Task> getTaskFor(String username) {
-        List<Task> UserTask = taskRepository.findByAuthor(username);
-        if(UserTask.isEmpty()) throw new TaskNotFoundException("Task not found");
-        return UserTask;
-    }
-
-    @Override
-    public void deleteAll() {
-        taskRepository.deleteAll();
-    }
-
-    private static void ValidateNote(CreateTaskRequest createNoteRequest) {
-        if(createNoteRequest.getAuthor().trim().isEmpty())throw new InputMismatchException("Invalid Input");
-        if(createNoteRequest.getTitle().trim().isEmpty())throw new InputMismatchException("Title not found");
-    }
-
-    @Override
     public TaskResponse updateTask(UpdateTaskRequest task) {
         validateUpdate(task);
         Task updateTask = taskRepository.findByTitle(task.getTitle());
@@ -73,6 +56,18 @@ public class TaskServicesImpl implements TaskServices{
     @Override
     public List<Task> getAllTask() {
         return taskRepository.findAll();
+    }
+
+    @Override
+    public List<Task> getTaskFor(String username) {
+        List<Task> UserTask = taskRepository.findByAuthor(username);
+        if(UserTask.isEmpty()) throw new TaskNotFoundException("Task not found");
+        return UserTask;
+    }
+
+    @Override
+    public void deleteAll() {
+        taskRepository.deleteAll();
     }
 
     @Override
@@ -98,8 +93,14 @@ public class TaskServicesImpl implements TaskServices{
     public TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest) {
         if(taskCompletedRequest.getTitle().trim().isEmpty())throw new InputMismatchException("Title not found");
         Task foundTask = taskRepository.findByTitle(taskCompletedRequest.getTitle());
+
         foundTask.setStatus(Status.COMPLETED);
         return map(foundTask);
+    }
+
+    private static void ValidateNote(CreateTaskRequest createNoteRequest) {
+        if(createNoteRequest.getAuthor().trim().isEmpty())throw new InputMismatchException("Invalid Input");
+        if(createNoteRequest.getTitle().trim().isEmpty())throw new InputMismatchException("Title not found");
     }
 
     private static void validateUpdate(UpdateTaskRequest task) {

@@ -48,11 +48,11 @@ public class TodoServicesImpl implements TodoServices{
     @Override
     public UserResponse login(LoginUserRequest loginUserRequest) {
         validateLogin(loginUserRequest);
-        Todo newTodo = map(loginUserRequest);
+        Todo newTodo = todoRepository.findByUsername(loginUserRequest.getUsername());
         UserResponse response = map(newTodo);
         newTodo.setLoggedIn(true);
-        if (!newTodo.getPassword().equals(loginUserRequest.getPassword()))
-            throw new IncorrectPassword("Incorrect password");
+        if (!newTodo.getPassword().equals(loginUserRequest.getPassword())) throw new IncorrectPassword("Incorrect password");
+        todoRepository.save(newTodo);
         return response;
     }
 

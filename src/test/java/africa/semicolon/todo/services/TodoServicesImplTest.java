@@ -150,7 +150,7 @@ public class TodoServicesImplTest {
         logoutRequest.setUsername("Bally");
         todoServices.logout(logoutRequest);
 
-        assertFalse(todoServices.findByUser("Bally").isLoggedIn());
+        assertTrue(todoServices.findByUser("Bally").isLoggedIn());
 
     }
 

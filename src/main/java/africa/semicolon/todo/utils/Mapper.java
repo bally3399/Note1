@@ -24,12 +24,6 @@ public class Mapper {
         response.setMessage("Successful");
         return response;
     }
-    public static Todo map(LoginUserRequest loginUserRequest){
-        Todo todo = new Todo();
-        todo.setPassword(loginUserRequest.getPassword());
-        todo.setUsername(loginUserRequest.getUsername());
-        return todo;
-    }
     public static Task map(CreateTaskRequest createTaskRequest){
         Task task = new Task();
         task.setTitle(createTaskRequest.getTitle());
