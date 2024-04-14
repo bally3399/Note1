@@ -39,15 +39,15 @@ public class TaskServicesImpl implements TaskServices{
         validateUpdate(task);
         Task updateTask = taskRepository.findByTitle(task.getTitle());
         if (task.getTitle()!= null && task.getDescription() != null && task.getAuthor() != null){
-            updateTask.setTitle(task.getNewTitle());
-            updateTask.setAuthor(task.getAuthor());
+            updateTask.setTitle(task.getNewTitle().toLowerCase());
+            updateTask.setAuthor(task.getAuthor().toLowerCase());
             updateTask.setDescription(task.getNewDescription());
             updateTask.setStatus(task.getNewStatus());
         }
         Task savedTask = taskRepository.save(updateTask);
         TaskResponse taskResponse = new TaskResponse();
-        taskResponse.setTitle(savedTask.getTitle());
-        taskResponse.setAuthor(savedTask.getAuthor());
+        taskResponse.setTitle(savedTask.getTitle().toLowerCase());
+        taskResponse.setAuthor(savedTask.getAuthor().toLowerCase());
         taskResponse.setDescription(savedTask.getDescription());
         taskResponse.setStatus(savedTask.getStatus());
         return taskResponse;

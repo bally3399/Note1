@@ -21,7 +21,7 @@ public interface TodoServices {
 
     Task findTaskByTitle(String title);
 
-    TaskResponse updateNote(UpdateTaskRequest updateNoteRequest);
+    TaskResponse updateTask(UpdateTaskRequest updateNoteRequest);
 
     String deleteTask(CreateTaskRequest createTaskRequest);
 

@@ -229,7 +229,7 @@ public class TodoServicesImplTest {
         updateNoteRequest.setStatus(Status.IN_PROGRESS);
         updateNoteRequest.setAuthor("Bally");
 
-        TaskResponse task = todoServices.updateNote(updateNoteRequest);
+        TaskResponse task = todoServices.updateTask(updateNoteRequest);
         assertEquals("newTitle", task.getTitle());
         assertEquals(Level.IMPORTANT, task.getDescription());
         assertEquals(1, taskServices.getTaskFor("Bally").size());

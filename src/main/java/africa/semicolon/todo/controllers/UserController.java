@@ -2,9 +2,8 @@ package africa.semicolon.todo.controllers;
 
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.dtos.request.*;
-import africa.semicolon.todo.dtos.response.TaskApiResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
-import africa.semicolon.todo.dtos.response.UserApiResponse;
+import africa.semicolon.todo.dtos.response.ApiResponse;
 import africa.semicolon.todo.dtos.response.UserResponse;
 import africa.semicolon.todo.exceptions.TodoExceptions;
 import africa.semicolon.todo.services.TodoServices;
@@ -27,9 +26,9 @@ public class UserController {
     public ResponseEntity<?> register(@RequestBody RegisterUserRequest registerUserRequest){
         try{
             UserResponse result = todoServices.registerUser(registerUserRequest);
-            return new ResponseEntity<>(new UserApiResponse(true, result), CREATED);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions | InputMismatchException e){
-            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
 
     }
@@ -38,27 +37,27 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody LoginUserRequest loginUserRequest) {
         try {
             UserResponse result = todoServices.login(loginUserRequest);
-            return new ResponseEntity<>(new UserApiResponse(true, result), CREATED);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         } catch (TodoExceptions | InputMismatchException e) {
-            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody LogoutRequest logoutRequest) {
         try {
             String result = todoServices.logout(logoutRequest);
-            return new ResponseEntity<>(new UserApiResponse(true, result), CREATED);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         } catch (TodoExceptions e) {
-            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
     @PostMapping("/create")
     public ResponseEntity<?> Create(@RequestBody CreateTaskRequest taskRequest){
         try{
             TaskResponse result = todoServices.createTask(taskRequest);
-            return new ResponseEntity<>(new TaskApiResponse(true, result), CREATED);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions | InputMismatchException e){
-            return new ResponseEntity<>(new TaskApiResponse(false, e.getMessage()), BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
 
@@ -66,9 +65,9 @@ public class UserController {
     public ResponseEntity<?> taskInProgress(@RequestBody TaskInProgressRequest inProgressRequest){
         try{
             TaskResponse result = todoServices.taskInProgress(inProgressRequest);
-            return new ResponseEntity<>(new TaskApiResponse(true, result), CREATED);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions | InputMismatchException e){
-            return new ResponseEntity<>(new TaskApiResponse(false, e.getMessage()), BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
 
@@ -76,18 +75,18 @@ public class UserController {
     public ResponseEntity<?> taskCompleted(@RequestBody TaskCompletedRequest taskCompletedRequest){
         try{
             TaskResponse result = todoServices.taskCompleted(taskCompletedRequest);
-            return new ResponseEntity<>(new TaskApiResponse(true, result), CREATED);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions | InputMismatchException e){
-            return new ResponseEntity<>(new TaskApiResponse(false, e.getMessage()), BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
     @PostMapping("/update")
-    public ResponseEntity<?> UpdateNote(@RequestBody UpdateTaskRequest updateRequest){
+    public ResponseEntity<?> UpdateTask(@RequestBody UpdateTaskRequest updateRequest){
         try{
-            TaskResponse result = todoServices.updateNote(updateRequest);
-            return new ResponseEntity<>(new TaskApiResponse(true, result), CREATED);
+            TaskResponse result = todoServices.updateTask(updateRequest);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions | InputMismatchException e){
-            return new ResponseEntity<>(new TaskApiResponse(false, e.getMessage()), BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
 
@@ -95,18 +94,18 @@ public class UserController {
     public ResponseEntity<?> DeleteNote(@RequestBody CreateTaskRequest deleteNoteRequest){
         try{
             String result = todoServices.deleteTask(deleteNoteRequest);
-            return new ResponseEntity<>(new TaskApiResponse(true, result), CREATED);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions |InputMismatchException e){
-            return new ResponseEntity<>(new TaskApiResponse(false, e.getMessage()), BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
     @GetMapping("/get")
     public ResponseEntity<?> getAllTask(){
         try{
             List<Task> result = todoServices.getAllTask();
-            return new ResponseEntity<>(new TaskApiResponse(true, result), CREATED);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions e){
-            return new ResponseEntity<>(new TaskApiResponse(false, e.getMessage()), BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
 }
