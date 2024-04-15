@@ -2,6 +2,7 @@ package africa.semicolon.todo.controllers;
 
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.dtos.request.*;
+import africa.semicolon.todo.dtos.response.CreateTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.dtos.response.ApiResponse;
 import africa.semicolon.todo.dtos.response.UserResponse;
@@ -54,7 +55,7 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<?> Create(@RequestBody CreateTaskRequest taskRequest){
         try{
-            TaskResponse result = todoServices.createTask(taskRequest);
+            CreateTaskResponse result = todoServices.createTask(taskRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions | InputMismatchException e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
@@ -83,7 +84,7 @@ public class UserController {
     @PostMapping("/update")
     public ResponseEntity<?> UpdateTask(@RequestBody UpdateTaskRequest updateRequest){
         try{
-            TaskResponse result = todoServices.updateTask(updateRequest);
+            CreateTaskResponse result = todoServices.updateTask(updateRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions | InputMismatchException e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);

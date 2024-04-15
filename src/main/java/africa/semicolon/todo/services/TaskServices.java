@@ -5,18 +5,19 @@ import africa.semicolon.todo.dtos.request.CreateTaskRequest;
 import africa.semicolon.todo.dtos.request.TaskCompletedRequest;
 import africa.semicolon.todo.dtos.request.TaskInProgressRequest;
 import africa.semicolon.todo.dtos.request.UpdateTaskRequest;
+import africa.semicolon.todo.dtos.response.CreateTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 
 import java.util.List;
 
 public interface TaskServices {
-    TaskResponse createTask(CreateTaskRequest createTaskRequest);
+    CreateTaskResponse createTask(CreateTaskRequest createTaskRequest);
 
     List<Task> getTaskFor(String Username);
 
     void deleteAll();
 
-    TaskResponse updateTask(UpdateTaskRequest task);
+    CreateTaskResponse updateTask(UpdateTaskRequest task);
 
     List<Task> getAllTask();
 

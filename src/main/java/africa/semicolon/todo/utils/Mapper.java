@@ -6,6 +6,7 @@ import africa.semicolon.todo.data.model.Todo;
 import africa.semicolon.todo.dtos.request.CreateTaskRequest;
 import africa.semicolon.todo.dtos.request.LoginUserRequest;
 import africa.semicolon.todo.dtos.request.RegisterUserRequest;
+import africa.semicolon.todo.dtos.response.CreateTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.dtos.response.UserResponse;
 
@@ -20,8 +21,10 @@ public class Mapper {
     }
     public static UserResponse map(Todo savedTodo){
         UserResponse response = new UserResponse();
-        response.setUsername(savedTodo.getUsername());
-        response.setMessage("Successful");
+        if(savedTodo != null){
+            response.setUsername(savedTodo.getUsername());
+            response.setMessage("Successful");
+        }
         return response;
     }
     public static Task map(CreateTaskRequest createTaskRequest){
@@ -40,6 +43,15 @@ public class Mapper {
         response.setDescription(savedTask.getDescription());
         response.setTimeCreated(savedTask.getTimeCreated());
         response.setTimeDone(savedTask.getTimeDone());
+        response.setAuthor(savedTask.getAuthor());
+        response.setStatus(savedTask.getStatus());
+        return response;
+    }
+    public static CreateTaskResponse mapTask(Task savedTask){
+        CreateTaskResponse response = new CreateTaskResponse();
+        response.setTitle(savedTask.getTitle());
+        response.setDescription(savedTask.getDescription());
+        response.setTimeCreated(savedTask.getTimeCreated());
         response.setAuthor(savedTask.getAuthor());
         response.setStatus(savedTask.getStatus());
         return response;

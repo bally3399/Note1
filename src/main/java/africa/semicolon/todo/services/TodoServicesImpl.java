@@ -5,6 +5,7 @@ import africa.semicolon.todo.data.model.Todo;
 import africa.semicolon.todo.data.repositories.TaskRepository;
 import africa.semicolon.todo.data.repositories.TodoRepository;
 import africa.semicolon.todo.dtos.request.*;
+import africa.semicolon.todo.dtos.response.CreateTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.dtos.response.UserResponse;
 import africa.semicolon.todo.exceptions.IncorrectPassword;
@@ -29,7 +30,7 @@ public class TodoServicesImpl implements TodoServices{
     @Override
     public UserResponse registerUser(RegisterUserRequest registerUserRequest) {
         validateRegistration(registerUserRequest);
-        Todo todo = todoRepository.findByUsername(registerUserRequest.getUsername().toLowerCase());
+        Todo todo = todoRepository.findByUsername(registerUserRequest.getUsername());
         if (todo == null) {
             Todo newTodo = map(registerUserRequest);
             UserResponse response = map(newTodo);
@@ -48,7 +49,7 @@ public class TodoServicesImpl implements TodoServices{
     @Override
     public UserResponse login(LoginUserRequest loginUserRequest) {
         validateLogin(loginUserRequest);
-        Todo newTodo = todoRepository.findByUsername(loginUserRequest.getUsername().toLowerCase());
+        Todo newTodo = todoRepository.findByUsername(loginUserRequest.getUsername());
         UserResponse response = map(newTodo);
         newTodo.setLoggedIn(true);
         if (!newTodo.getPassword().equals(loginUserRequest.getPassword())) throw new IncorrectPassword("Incorrect password");
@@ -58,7 +59,7 @@ public class TodoServicesImpl implements TodoServices{
 
     @Override
     public String logout(LogoutRequest logoutRequest) {
-        Todo todo = todoRepository.findByUsername(logoutRequest.getUsername().toLowerCase());
+        Todo todo = todoRepository.findByUsername(logoutRequest.getUsername());
         if (todo == null) throw new IncorrectPassword("Username is not valid");
         todo.setLoggedIn(false);
         return "LoggedOut Successful";
@@ -70,7 +71,7 @@ public class TodoServicesImpl implements TodoServices{
     }
 
     @Override
-    public TaskResponse createTask(CreateTaskRequest createTaskRequest) {
+    public CreateTaskResponse createTask(CreateTaskRequest createTaskRequest) {
         Todo todo = todoRepository.findByUsername(createTaskRequest.getAuthor().toLowerCase());
         if(todo != null) todo.setLoggedIn(true);
         return taskServices.createTask(createTaskRequest);
@@ -87,7 +88,7 @@ public class TodoServicesImpl implements TodoServices{
     }
 
     @Override
-    public TaskResponse updateTask(UpdateTaskRequest updateNoteRequest) {
+    public CreateTaskResponse updateTask(UpdateTaskRequest updateNoteRequest) {
         return taskServices.updateTask(updateNoteRequest);
     }
 

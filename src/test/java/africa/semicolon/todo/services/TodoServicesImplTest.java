@@ -4,6 +4,7 @@ import africa.semicolon.todo.data.model.Level;
 import africa.semicolon.todo.data.model.Status;
 import africa.semicolon.todo.data.repositories.TodoRepository;
 import africa.semicolon.todo.dtos.request.*;
+import africa.semicolon.todo.dtos.response.CreateTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.exceptions.UserAlreadyExistException;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,6 +74,7 @@ public class TodoServicesImplTest {
         registerUserRequest.setPassword("password");
 
         todoServices.registerUser(registerUserRequest);
+
         assertThrows(UserAlreadyExistException.class,() -> todoServices.registerUser(registerUserRequest));
     }
 
@@ -172,7 +174,7 @@ public class TodoServicesImplTest {
         createTaskRequest.setDescription(Level.IMPORTANT);
         createTaskRequest.setStatus(Status.STARTED);
         createTaskRequest.setAuthor("Bally");
-        TaskResponse task = todoServices.createTask(createTaskRequest);
+        CreateTaskResponse task = todoServices.createTask(createTaskRequest);
         assertEquals("title", task.getTitle());
         assertEquals(Level.IMPORTANT, task.getDescription());
         assertEquals(1, taskServices.getTaskFor("Bally").size());
@@ -229,7 +231,7 @@ public class TodoServicesImplTest {
         updateNoteRequest.setStatus(Status.IN_PROGRESS);
         updateNoteRequest.setAuthor("Bally");
 
-        TaskResponse task = todoServices.updateTask(updateNoteRequest);
+        CreateTaskResponse task = todoServices.updateTask(updateNoteRequest);
         assertEquals("newTitle", task.getTitle());
         assertEquals(Level.IMPORTANT, task.getDescription());
         assertEquals(1, taskServices.getTaskFor("Bally").size());

@@ -7,6 +7,7 @@ import africa.semicolon.todo.dtos.request.CreateTaskRequest;
 import africa.semicolon.todo.dtos.request.TaskCompletedRequest;
 import africa.semicolon.todo.dtos.request.TaskInProgressRequest;
 import africa.semicolon.todo.dtos.request.UpdateTaskRequest;
+import africa.semicolon.todo.dtos.response.CreateTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.exceptions.TaskNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,38 +17,39 @@ import java.util.InputMismatchException;
 import java.util.List;
 
 import static africa.semicolon.todo.utils.Mapper.map;
+import static africa.semicolon.todo.utils.Mapper.mapTask;
 
 @Service
 public class TaskServicesImpl implements TaskServices{
     @Autowired
     private TaskRepository taskRepository;
     @Override
-    public TaskResponse createTask(CreateTaskRequest createTaskRequest) {
+    public CreateTaskResponse createTask(CreateTaskRequest createTaskRequest) {
         ValidateNote(createTaskRequest);
         for(Task tasks : taskRepository.findAll()){
             if(tasks.getTitle().equals(createTaskRequest.getTitle())) throw new TaskNotFoundException("Task Title Already Exist");
         }
         Task task = map(createTaskRequest);
         task.setStatus(Status.STARTED);
-        TaskResponse response = map(task);
+        CreateTaskResponse response = mapTask(task);
         taskRepository.save(task);
         return response;
     }
 
     @Override
-    public TaskResponse updateTask(UpdateTaskRequest task) {
+    public CreateTaskResponse updateTask(UpdateTaskRequest task) {
         validateUpdate(task);
         Task updateTask = taskRepository.findByTitle(task.getTitle());
         if (task.getTitle()!= null && task.getDescription() != null && task.getAuthor() != null){
-            updateTask.setTitle(task.getNewTitle().toLowerCase());
-            updateTask.setAuthor(task.getAuthor().toLowerCase());
+            updateTask.setTitle(task.getNewTitle());
+            updateTask.setAuthor(task.getAuthor());
             updateTask.setDescription(task.getNewDescription());
             updateTask.setStatus(task.getNewStatus());
         }
         Task savedTask = taskRepository.save(updateTask);
-        TaskResponse taskResponse = new TaskResponse();
-        taskResponse.setTitle(savedTask.getTitle().toLowerCase());
-        taskResponse.setAuthor(savedTask.getAuthor().toLowerCase());
+        CreateTaskResponse taskResponse = new CreateTaskResponse();
+        taskResponse.setTitle(savedTask.getTitle());
+        taskResponse.setAuthor(savedTask.getAuthor());
         taskResponse.setDescription(savedTask.getDescription());
         taskResponse.setStatus(savedTask.getStatus());
         return taskResponse;

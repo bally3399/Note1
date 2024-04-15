@@ -3,6 +3,7 @@ package africa.semicolon.todo.services;
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.data.model.Todo;
 import africa.semicolon.todo.dtos.request.*;
+import africa.semicolon.todo.dtos.response.CreateTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.dtos.response.UserResponse;
 
@@ -17,11 +18,11 @@ public interface TodoServices {
 
     Todo findByUser(String bally);
 
-    TaskResponse createTask(CreateTaskRequest createTaskRequest);
+    CreateTaskResponse createTask(CreateTaskRequest createTaskRequest);
 
     Task findTaskByTitle(String title);
 
-    TaskResponse updateTask(UpdateTaskRequest updateNoteRequest);
+    CreateTaskResponse updateTask(UpdateTaskRequest updateNoteRequest);
 
     String deleteTask(CreateTaskRequest createTaskRequest);
 
