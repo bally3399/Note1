@@ -3,16 +3,14 @@ package africa.semicolon.todo.services;
 import africa.semicolon.todo.data.model.Status;
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.data.repositories.TaskRepository;
-import africa.semicolon.todo.dtos.request.CreateTaskRequest;
-import africa.semicolon.todo.dtos.request.TaskCompletedRequest;
-import africa.semicolon.todo.dtos.request.TaskInProgressRequest;
-import africa.semicolon.todo.dtos.request.UpdateTaskRequest;
+import africa.semicolon.todo.dtos.request.*;
 import africa.semicolon.todo.dtos.response.CreateTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.exceptions.TaskNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
@@ -27,10 +25,10 @@ public class TaskServicesImpl implements TaskServices{
     public CreateTaskResponse createTask(CreateTaskRequest createTaskRequest) {
         ValidateNote(createTaskRequest);
         for(Task tasks : taskRepository.findAll()){
-            if(tasks.getTitle().equals(createTaskRequest.getTitle())) throw new TaskNotFoundException("Task Title Already Exist");
+            if(tasks.getId().equals(createTaskRequest.getId())) throw new TaskNotFoundException("Task Already Exist");
         }
         Task task = map(createTaskRequest);
-        task.setStatus(Status.STARTED);
+        task.setStatus(Status.CREATED);
         CreateTaskResponse response = mapTask(task);
         taskRepository.save(task);
         return response;
@@ -59,6 +57,43 @@ public class TaskServicesImpl implements TaskServices{
     public List<Task> getAllTask() {
         return taskRepository.findAll();
     }
+    @Override
+    public List<Task> getAllTaskStarted(){
+        List<Task> tasks = new ArrayList<>();
+        for(Task task : taskRepository.findAll()){
+            if(Status.STARTED == task.getStatus()) tasks.add(task);
+        }
+        return tasks;
+    }
+
+    @Override
+    public List<Task> getAllTaskCreated(){
+        List<Task> tasks = new ArrayList<>();
+        for(Task task : taskRepository.findAll()){
+            if(Status.CREATED == task.getStatus()) tasks.add(task);
+        }
+        return tasks;
+    }
+    @Override
+    public List<Task> getAllTaskInProgress(){
+        List<Task> tasks = new ArrayList<>();
+        for(Task task : taskRepository.findAll()){
+            if(Status.IN_PROGRESS == task.getStatus()) tasks.add(task);
+        }
+        return tasks;
+    }
+
+    @Override
+    public List<Task> getAllTaskCompleted(){
+        List<Task> tasks = new ArrayList<>();
+        for(Task task : taskRepository.findAll()){
+            if(Status.COMPLETED == task.getStatus()) tasks.add(task);
+        }
+        return tasks;
+    }
+
+
+
 
     @Override
     public List<Task> getTaskFor(String username) {
@@ -98,6 +133,14 @@ public class TaskServicesImpl implements TaskServices{
 
         foundTask.setStatus(Status.COMPLETED);
         return map(foundTask);
+    }
+
+    @Override
+    public CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest) {
+        if(startedTaskRequest.getTitle().trim().isEmpty())throw new InputMismatchException("Title not found");
+        Task foundTask = taskRepository.findByTitle(startedTaskRequest.getTitle());
+        foundTask.setStatus(Status.STARTED);
+        return mapTask(foundTask);
     }
 
     private static void ValidateNote(CreateTaskRequest createNoteRequest) {

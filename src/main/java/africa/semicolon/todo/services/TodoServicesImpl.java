@@ -101,10 +101,33 @@ public class TodoServicesImpl implements TodoServices{
     public List<Task> getAllTask() {
         return taskServices.getAllTask();
     }
+    @Override
+    public List<Task> getAllStartedTask() {
+        return taskServices.getAllTaskStarted();
+    }
+
+    @Override
+    public List<Task> getAllTaskCompleted() {
+        return taskServices.getAllTaskCompleted();
+    }
+
+    @Override
+    public List<Task> getAllTaskCreated() {
+        return taskServices.getAllTaskCreated();
+    }
+    @Override
+    public List<Task> getAllTaskInProgress() {
+        return taskServices.getAllTaskInProgress();
+    }
+
 
     @Override
     public TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest) {
         return taskServices.taskInProgress(inProgressRequest);
+    }
+    @Override
+    public CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest){
+        return taskServices.startedTask(startedTaskRequest);
     }
 
     @Override

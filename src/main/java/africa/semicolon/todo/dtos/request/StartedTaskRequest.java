@@ -5,9 +5,9 @@ import africa.semicolon.todo.data.model.Status;
 import lombok.Data;
 
 @Data
-public class CreateTaskRequest {
-    private String id;
+public class StartedTaskRequest {
     private String title;
     private Level description;
     private String author;
+    private Status status;
 }

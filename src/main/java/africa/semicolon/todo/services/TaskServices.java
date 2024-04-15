@@ -1,10 +1,7 @@
 package africa.semicolon.todo.services;
 
 import africa.semicolon.todo.data.model.Task;
-import africa.semicolon.todo.dtos.request.CreateTaskRequest;
-import africa.semicolon.todo.dtos.request.TaskCompletedRequest;
-import africa.semicolon.todo.dtos.request.TaskInProgressRequest;
-import africa.semicolon.todo.dtos.request.UpdateTaskRequest;
+import africa.semicolon.todo.dtos.request.*;
 import africa.semicolon.todo.dtos.response.CreateTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 
@@ -12,6 +9,14 @@ import java.util.List;
 
 public interface TaskServices {
     CreateTaskResponse createTask(CreateTaskRequest createTaskRequest);
+
+    List<Task> getAllTaskStarted();
+
+    List<Task> getAllTaskCreated();
+
+    List<Task> getAllTaskInProgress();
+
+    List<Task> getAllTaskCompleted();
 
     List<Task> getTaskFor(String Username);
 
@@ -26,4 +31,6 @@ public interface TaskServices {
     TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest);
 
     TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest);
+
+    CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest);
 }

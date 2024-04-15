@@ -172,7 +172,6 @@ public class TodoServicesImplTest {
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
         createTaskRequest.setDescription(Level.IMPORTANT);
-        createTaskRequest.setStatus(Status.STARTED);
         createTaskRequest.setAuthor("Bally");
         CreateTaskResponse task = todoServices.createTask(createTaskRequest);
         assertEquals("title", task.getTitle());
@@ -197,7 +196,6 @@ public class TodoServicesImplTest {
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
         createTaskRequest.setDescription(Level.LESS_IMPORTANT);
-        createTaskRequest.setStatus(Status.STARTED);
         createTaskRequest.setAuthor("Bally");
         todoServices.createTask(createTaskRequest);
         assertEquals(todoServices.findTaskByTitle("title").getTitle(),"title");
@@ -218,7 +216,6 @@ public class TodoServicesImplTest {
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
         createTaskRequest.setDescription(Level.LESS_IMPORTANT);
-        createTaskRequest.setStatus(Status.STARTED);
         createTaskRequest.setAuthor("Bally");
         todoServices.createTask(createTaskRequest);
 
@@ -252,7 +249,6 @@ public class TodoServicesImplTest {
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
         createTaskRequest.setDescription(Level.LESS_URGENT);
-        createTaskRequest.setStatus(Status.STARTED);
         createTaskRequest.setAuthor("Bally");
         todoServices.createTask(createTaskRequest);
 
@@ -272,7 +268,6 @@ public class TodoServicesImplTest {
         todoServices.login(loginUserRequest);
 
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
-        createTaskRequest.setStatus(Status.STARTED);
         createTaskRequest.setTitle("");
         createTaskRequest.setDescription(Level.LESS_URGENT);
         createTaskRequest.setAuthor("Bally");
@@ -297,7 +292,6 @@ public class TodoServicesImplTest {
 
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
-        createTaskRequest.setStatus(Status.STARTED);
         createTaskRequest.setDescription(Level.URGENT);
         createTaskRequest.setAuthor("");
         try {
@@ -337,7 +331,6 @@ public class TodoServicesImplTest {
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
         createTaskRequest.setDescription(Level.LESS_IMPORTANT);
-        createTaskRequest.setStatus(Status.STARTED);
         createTaskRequest.setAuthor("Bally");
         todoServices.createTask(createTaskRequest);
 
@@ -368,9 +361,15 @@ public class TodoServicesImplTest {
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
         createTaskRequest.setDescription(Level.LESS_IMPORTANT);
-        createTaskRequest.setStatus(Status.STARTED);
         createTaskRequest.setAuthor("Bally");
         todoServices.createTask(createTaskRequest);
+
+        StartedTaskRequest startedTaskRequest = new StartedTaskRequest();
+        startedTaskRequest.setTitle("title");
+        startedTaskRequest.setDescription(Level.LESS_IMPORTANT);
+        startedTaskRequest.setAuthor("Bally");
+        startedTaskRequest.setStatus(Status.STARTED);
+        todoServices.startedTask(startedTaskRequest);
 
         TaskInProgressRequest inProgressRequest = new TaskInProgressRequest();
         inProgressRequest.setTitle("title");

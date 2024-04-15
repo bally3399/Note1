@@ -34,7 +34,7 @@ public class Mapper {
         task.setTimeCreated(LocalDateTime.now());
         task.setAuthor(createTaskRequest.getAuthor());
         task.setId(task.getId());
-        task.setStatus(createTaskRequest.getStatus());
+        task.setStatus(Status.CREATED);
         return task;
     }
     public static TaskResponse map(Task savedTask){

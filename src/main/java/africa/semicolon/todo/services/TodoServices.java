@@ -28,7 +28,17 @@ public interface TodoServices {
 
     List<Task> getAllTask();
 
+    List<Task> getAllStartedTask();
+
+    List<Task> getAllTaskCompleted();
+
+    List<Task> getAllTaskCreated();
+
+    List<Task> getAllTaskInProgress();
+
     TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest);
+
+    CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest);
 
     TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest);
 }

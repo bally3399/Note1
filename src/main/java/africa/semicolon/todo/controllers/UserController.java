@@ -62,6 +62,15 @@ public class UserController {
         }
     }
 
+    @PostMapping("/started")
+    public ResponseEntity<?> StartedTask(@RequestBody StartedTaskRequest taskRequest){
+        try{
+            CreateTaskResponse result = todoServices.startedTask(taskRequest);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
+        }catch (TodoExceptions | InputMismatchException e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
     @PostMapping("/inProgress")
     public ResponseEntity<?> taskInProgress(@RequestBody TaskInProgressRequest inProgressRequest){
         try{
@@ -104,6 +113,42 @@ public class UserController {
     public ResponseEntity<?> getAllTask(){
         try{
             List<Task> result = todoServices.getAllTask();
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
+        }catch (TodoExceptions e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+    @GetMapping("/getTask")
+    public ResponseEntity<?> getAllTaskStarted(){
+        try{
+            List<Task> result = todoServices.getAllStartedTask();
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
+        }catch (TodoExceptions e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+    @GetMapping("/getTaskCreated")
+    public ResponseEntity<?> getAllTaskCreated(){
+        try{
+            List<Task> result = todoServices.getAllTaskCreated();
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
+        }catch (TodoExceptions e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+    @GetMapping("/getTaskInProgress")
+    public ResponseEntity<?> getAllTaskInProgress(){
+        try{
+            List<Task> result = todoServices.getAllTaskInProgress();
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
+        }catch (TodoExceptions e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+    @GetMapping("/getTaskDone")
+    public ResponseEntity<?> getAllTaskCompleted(){
+        try{
+            List<Task> result = todoServices.getAllTaskCompleted();
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
