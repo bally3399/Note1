@@ -133,7 +133,7 @@ public class TodoServicesImplTest {
         registerUserRequest.setUsername("Bally");
         registerUserRequest.setPassword("password");
         todoServices.registerUser(registerUserRequest);
-        assertEquals("Bally", todoServices.findByUser("Bally").getUsername());
+        assertEquals("bally", todoServices.findByUser("bally").getUsername());
     }
 
     @Test
@@ -152,7 +152,7 @@ public class TodoServicesImplTest {
         logoutRequest.setUsername("Bally");
         todoServices.logout(logoutRequest);
 
-        assertTrue(todoServices.findByUser("Bally").isLoggedIn());
+        assertFalse(todoServices.findByUser("Bally").isLoggedIn());
 
     }
 
@@ -224,8 +224,6 @@ public class TodoServicesImplTest {
         updateNoteRequest.setNewTitle("newTitle");
         updateNoteRequest.setDescription(Level.LESS_IMPORTANT);
         updateNoteRequest.setNewDescription(Level.IMPORTANT);
-        updateNoteRequest.setStatus(Status.STARTED);
-        updateNoteRequest.setStatus(Status.IN_PROGRESS);
         updateNoteRequest.setAuthor("Bally");
 
         CreateTaskResponse task = todoServices.updateTask(updateNoteRequest);
@@ -251,6 +249,8 @@ public class TodoServicesImplTest {
         createTaskRequest.setDescription(Level.LESS_URGENT);
         createTaskRequest.setAuthor("Bally");
         todoServices.createTask(createTaskRequest);
+
+
 
         todoServices.deleteTask(createTaskRequest);
         assertEquals(0, taskServices.getAllTask().size());
@@ -338,7 +338,6 @@ public class TodoServicesImplTest {
         inProgressRequest.setTitle("title");
         inProgressRequest.setDescription(Level.LESS_IMPORTANT);
         inProgressRequest.setAuthor("Bally");
-        inProgressRequest.setStatus(Status.IN_PROGRESS);
         TaskResponse task = todoServices.taskInProgress(inProgressRequest);
 
         assertEquals(Level.LESS_IMPORTANT, task.getDescription());
@@ -368,21 +367,18 @@ public class TodoServicesImplTest {
         startedTaskRequest.setTitle("title");
         startedTaskRequest.setDescription(Level.LESS_IMPORTANT);
         startedTaskRequest.setAuthor("Bally");
-        startedTaskRequest.setStatus(Status.STARTED);
         todoServices.startedTask(startedTaskRequest);
 
         TaskInProgressRequest inProgressRequest = new TaskInProgressRequest();
         inProgressRequest.setTitle("title");
         inProgressRequest.setDescription(Level.LESS_IMPORTANT);
         inProgressRequest.setAuthor("Bally");
-        inProgressRequest.setStatus(Status.IN_PROGRESS);
         todoServices.taskInProgress(inProgressRequest);
 
         TaskCompletedRequest taskCompletedRequest = new TaskCompletedRequest();
         taskCompletedRequest.setTitle("title");
         taskCompletedRequest.setDescription(Level.LESS_IMPORTANT);
         taskCompletedRequest.setAuthor("Bally");
-        taskCompletedRequest.setStatus(Status.COMPLETED);
         TaskResponse task = todoServices.taskCompleted(taskCompletedRequest);
         assertEquals(Level.LESS_IMPORTANT, task.getDescription());
         assertEquals(Status.COMPLETED, task.getStatus());

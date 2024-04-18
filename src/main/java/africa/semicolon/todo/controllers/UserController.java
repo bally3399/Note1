@@ -119,36 +119,45 @@ public class UserController {
         }
     }
     @GetMapping("/getTask")
-    public ResponseEntity<?> getAllTaskStarted(){
+    public ResponseEntity<?> getAllTaskStarted(@RequestBody GetTaskRequest getTaskRequest){
         try{
-            List<Task> result = todoServices.getAllStartedTask();
+            List<Task> result = todoServices.getAllStartedTask(getTaskRequest.getUsername());
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
     @GetMapping("/getTaskCreated")
-    public ResponseEntity<?> getAllTaskCreated(){
+    public ResponseEntity<?> getAllTaskCreated(@RequestBody GetTaskRequest getTaskRequest){
         try{
-            List<Task> result = todoServices.getAllTaskCreated();
+            List<Task> result = todoServices.getAllTaskCreated(getTaskRequest.getUsername());
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
     @GetMapping("/getTaskInProgress")
-    public ResponseEntity<?> getAllTaskInProgress(){
+    public ResponseEntity<?> getAllTaskInProgress(@RequestBody GetTaskRequest getTaskRequest){
         try{
-            List<Task> result = todoServices.getAllTaskInProgress();
+            List<Task> result = todoServices.getAllTaskInProgress(getTaskRequest.getUsername());
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
     @GetMapping("/getTaskDone")
-    public ResponseEntity<?> getAllTaskCompleted(){
+    public ResponseEntity<?> getAllTaskCompleted(@RequestBody GetTaskRequest getTaskRequest){
         try{
-            List<Task> result = todoServices.getAllTaskCompleted();
+            List<Task> result = todoServices.getAllTaskCompleted(getTaskRequest.getUsername());
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
+        }catch (TodoExceptions e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+    @GetMapping ("/getTaskFor")
+    public ResponseEntity<?> getTaskFor(@RequestBody GetTaskRequest getTaskRequest){
+        try{
+            List<Task> result = todoServices.getTaskFor(getTaskRequest.getUsername());
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);

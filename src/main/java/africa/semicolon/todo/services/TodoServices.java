@@ -28,13 +28,15 @@ public interface TodoServices {
 
     List<Task> getAllTask();
 
-    List<Task> getAllStartedTask();
+    List<Task> getAllStartedTask(String user);
 
-    List<Task> getAllTaskCompleted();
+    List<Task> getTaskFor(String user);
 
-    List<Task> getAllTaskCreated();
+    List<Task> getAllTaskCompleted(String user);
 
-    List<Task> getAllTaskInProgress();
+    List<Task> getAllTaskCreated(String user);
+
+    List<Task> getAllTaskInProgress(String user);
 
     TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest);
 

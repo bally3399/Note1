@@ -6,8 +6,9 @@ import lombok.Data;
 
 @Data
 public class TaskInProgressRequest {
-    private String title;
+    //private String title;
+    private String id;
     private Level description;
     private String author;
-    private Status status;
+
 }

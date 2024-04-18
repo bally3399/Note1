@@ -9,5 +9,4 @@ public class TaskCompletedRequest {
     private String title;
     private Level description;
     private String author;
-    private Status status;
 }

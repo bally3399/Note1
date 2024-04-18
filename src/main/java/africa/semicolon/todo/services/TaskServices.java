@@ -10,13 +10,13 @@ import java.util.List;
 public interface TaskServices {
     CreateTaskResponse createTask(CreateTaskRequest createTaskRequest);
 
-    List<Task> getAllTaskStarted();
+    List<Task> getAllTaskStarted(String user);
 
-    List<Task> getAllTaskCreated();
+    List<Task> getAllTaskCreated(String user);
 
-    List<Task> getAllTaskInProgress();
+    List<Task> getAllTaskInProgress(String user);
 
-    List<Task> getAllTaskCompleted();
+    List<Task> getAllTaskCompleted(String user);
 
     List<Task> getTaskFor(String Username);
 
@@ -27,6 +27,7 @@ public interface TaskServices {
     List<Task> getAllTask();
 
     String deleteTask(CreateTaskRequest createTaskRequest);
+
 
     TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest);
 

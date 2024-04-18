@@ -11,7 +11,7 @@ import africa.semicolon.todo.dtos.response.UserResponse;
 import africa.semicolon.todo.exceptions.IncorrectPassword;
 import africa.semicolon.todo.exceptions.TaskNotFoundException;
 import africa.semicolon.todo.exceptions.UserAlreadyExistException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.InputMismatchException;
@@ -20,17 +20,15 @@ import java.util.List;
 import static africa.semicolon.todo.utils.Mapper.map;
 
 @Service
+@AllArgsConstructor
 public class TodoServicesImpl implements TodoServices{
-    @Autowired
-    private TodoRepository todoRepository;
-    @Autowired
-    private TaskServices taskServices;
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TodoRepository todoRepository;
+    private final TaskServices taskServices;
+    private final TaskRepository taskRepository;
     @Override
     public UserResponse registerUser(RegisterUserRequest registerUserRequest) {
         validateRegistration(registerUserRequest);
-        Todo todo = todoRepository.findByUsername(registerUserRequest.getUsername());
+        Todo todo = todoRepository.findByUsername(registerUserRequest.getUsername().toLowerCase());
         if (todo == null) {
             Todo newTodo = map(registerUserRequest);
             UserResponse response = map(newTodo);
@@ -49,7 +47,7 @@ public class TodoServicesImpl implements TodoServices{
     @Override
     public UserResponse login(LoginUserRequest loginUserRequest) {
         validateLogin(loginUserRequest);
-        Todo newTodo = todoRepository.findByUsername(loginUserRequest.getUsername());
+        Todo newTodo = todoRepository.findByUsername(loginUserRequest.getUsername().toLowerCase());
         UserResponse response = map(newTodo);
         newTodo.setLoggedIn(true);
         if (!newTodo.getPassword().equals(loginUserRequest.getPassword())) throw new IncorrectPassword("Incorrect password");
@@ -59,15 +57,16 @@ public class TodoServicesImpl implements TodoServices{
 
     @Override
     public String logout(LogoutRequest logoutRequest) {
-        Todo todo = todoRepository.findByUsername(logoutRequest.getUsername());
+        Todo todo = todoRepository.findByUsername(logoutRequest.getUsername().toLowerCase());
         if (todo == null) throw new IncorrectPassword("Username is not valid");
         todo.setLoggedIn(false);
+        todoRepository.save(todo);
         return "LoggedOut Successful";
     }
 
     @Override
     public Todo findByUser(String username) {
-        return todoRepository.findByUsername(username);
+        return todoRepository.findByUsername(username.toLowerCase());
     }
 
     @Override
@@ -88,13 +87,17 @@ public class TodoServicesImpl implements TodoServices{
     }
 
     @Override
-    public CreateTaskResponse updateTask(UpdateTaskRequest updateNoteRequest) {
-        return taskServices.updateTask(updateNoteRequest);
+    public CreateTaskResponse updateTask(UpdateTaskRequest updateTaskRequest) {
+        Todo todo = todoRepository.findByUsername(updateTaskRequest.getAuthor().toLowerCase());
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return taskServices.updateTask(updateTaskRequest);
     }
 
     @Override
-    public String deleteTask(CreateTaskRequest createTaskRequest) {
-        return taskServices.deleteTask(createTaskRequest);
+    public String deleteTask(CreateTaskRequest deleteTaskRequest) {
+        Todo todo = todoRepository.findByUsername(deleteTaskRequest.getAuthor().toLowerCase());
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return taskServices.deleteTask(deleteTaskRequest);
     }
 
     @Override
@@ -102,36 +105,56 @@ public class TodoServicesImpl implements TodoServices{
         return taskServices.getAllTask();
     }
     @Override
-    public List<Task> getAllStartedTask() {
-        return taskServices.getAllTaskStarted();
+    public List<Task> getAllStartedTask(String user) {
+        Todo todo = todoRepository.findByUsername(user);
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return taskServices.getAllTaskStarted(user);
+    }
+    @Override
+    public List<Task> getTaskFor(String user){
+        Todo todo = todoRepository.findByUsername(user.toLowerCase());
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return taskServices.getTaskFor(user.toLowerCase());
     }
 
     @Override
-    public List<Task> getAllTaskCompleted() {
-        return taskServices.getAllTaskCompleted();
+    public List<Task> getAllTaskCompleted(String user) {
+        Todo todo = todoRepository.findByUsername(user);
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return taskServices.getAllTaskCompleted(user);
     }
 
     @Override
-    public List<Task> getAllTaskCreated() {
-        return taskServices.getAllTaskCreated();
+    public List<Task> getAllTaskCreated(String user) {
+        Todo todo = todoRepository.findByUsername(user);
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return taskServices.getAllTaskCreated(user);
     }
     @Override
-    public List<Task> getAllTaskInProgress() {
-        return taskServices.getAllTaskInProgress();
+    public List<Task> getAllTaskInProgress(String user) {
+        Todo todo = todoRepository.findByUsername(user);
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return taskServices.getAllTaskInProgress(user);
     }
 
 
     @Override
     public TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest) {
+        Todo todo = todoRepository.findByUsername(inProgressRequest.getAuthor());
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
         return taskServices.taskInProgress(inProgressRequest);
     }
     @Override
     public CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest){
+        Todo todo = todoRepository.findByUsername(startedTaskRequest.getAuthor().toLowerCase());
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
         return taskServices.startedTask(startedTaskRequest);
     }
 
     @Override
     public TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest) {
+        Todo todo = todoRepository.findByUsername(taskCompletedRequest.getAuthor().toLowerCase());
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
         return taskServices.taskCompleted(taskCompletedRequest);
     }
 

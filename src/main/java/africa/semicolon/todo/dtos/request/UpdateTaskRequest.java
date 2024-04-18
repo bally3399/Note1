@@ -10,7 +10,5 @@ public class UpdateTaskRequest {
     private String newTitle;
     private Level description;
     private Level newDescription;
-    private Status status;
-    private Status newStatus;
     private String author;
 }

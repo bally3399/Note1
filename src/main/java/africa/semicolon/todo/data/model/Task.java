@@ -4,7 +4,6 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,7 +13,7 @@ public class Task {
     private String id;
     private String title;
     private Status status;
-    private Level description;
+    private Level priority;
     private LocalDateTime timeCreated = LocalDateTime.now();
     private LocalDateTime timeDone = LocalDateTime.now();
     private String author;
