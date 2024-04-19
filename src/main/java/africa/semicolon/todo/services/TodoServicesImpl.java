@@ -14,7 +14,6 @@ import africa.semicolon.todo.exceptions.UserAlreadyExistException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.InputMismatchException;
 import java.util.List;
 
 import static africa.semicolon.todo.utils.Mapper.map;
@@ -39,9 +38,9 @@ public class TodoServicesImpl implements TodoServices{
     }
 
     private static void validateRegistration(RegisterUserRequest registerUserRequest) {
-        if (!registerUserRequest.getUsername().matches("[a-zA-Z]+")) throw new InputMismatchException("Invalid Input");
+        if (!registerUserRequest.getUsername().matches("[a-zA-Z]+")) throw new UserAlreadyExistException("Invalid Input");
         if (registerUserRequest.getPassword().isEmpty())
-            throw new InputMismatchException("Invalid Password provide a Password");
+            throw new IncorrectPassword("Invalid Password provide a Password");
     }
 
     @Override
@@ -94,7 +93,7 @@ public class TodoServicesImpl implements TodoServices{
     }
 
     @Override
-    public String deleteTask(CreateTaskRequest deleteTaskRequest) {
+    public String deleteTask(DeleteTaskRequest deleteTaskRequest) {
         Todo todo = todoRepository.findByUsername(deleteTaskRequest.getAuthor().toLowerCase());
         if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
         return taskServices.deleteTask(deleteTaskRequest);
@@ -136,7 +135,32 @@ public class TodoServicesImpl implements TodoServices{
         if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
         return taskServices.getAllTaskInProgress(user);
     }
+    @Override
+    public TaskResponse taskPriorityTo(TaskPriorityToImportantRequest priority) {
+        Todo todo = todoRepository.findByUsername(priority.getAuthor());
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return taskServices.taskPriorityTo(priority);
+    }
 
+    @Override
+    public TaskResponse taskPriorityTo(TaskPriorityToLessImportantRequest priority) {
+        Todo todo = todoRepository.findByUsername(priority.getAuthor());
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return taskServices.taskPriorityTo(priority);
+    }
+
+    @Override
+    public TaskResponse taskPriorityTo(TaskPriorityToUrgentRequest priority) {
+        Todo todo = todoRepository.findByUsername(priority.getAuthor());
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return taskServices.taskPriorityToUrg(priority);
+    }
+    @Override
+    public TaskResponse taskPriorityTo(TaskPriorityToLessUrgentRequest priority) {
+        Todo todo = todoRepository.findByUsername(priority.getAuthor());
+        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return taskServices.taskPriorityToLessUrg(priority);
+    }
 
     @Override
     public TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest) {
@@ -159,9 +183,9 @@ public class TodoServicesImpl implements TodoServices{
     }
 
     private static void validateLogin(LoginUserRequest loginUserRequest) {
-        if (!loginUserRequest.getUsername().matches("[a-zA-Z]+")) throw new InputMismatchException("Invalid Input");
+        if (!loginUserRequest.getUsername().matches("[a-zA-Z]+")) throw new UserAlreadyExistException("Invalid Input");
         if (loginUserRequest.getPassword().isEmpty())
-            throw new InputMismatchException("Invalid Password provide a Password");
+            throw new IncorrectPassword("Invalid Password provide a Password");
     }
 
 }

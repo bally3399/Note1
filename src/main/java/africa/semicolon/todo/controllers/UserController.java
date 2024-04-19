@@ -43,6 +43,7 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody LogoutRequest logoutRequest) {
         try {
@@ -52,6 +53,7 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
+
     @PostMapping("/create")
     public ResponseEntity<?> Create(@RequestBody CreateTaskRequest taskRequest){
         try{
@@ -71,6 +73,7 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
+
     @PostMapping("/inProgress")
     public ResponseEntity<?> taskInProgress(@RequestBody TaskInProgressRequest inProgressRequest){
         try{
@@ -100,10 +103,50 @@ public class UserController {
         }
     }
 
-    @PostMapping("/delete")
-    public ResponseEntity<?> DeleteNote(@RequestBody CreateTaskRequest deleteNoteRequest){
+    @PostMapping("/changePriority")
+    public ResponseEntity<?> taskPriorityTo(@RequestBody TaskPriorityToImportantRequest priority){
         try{
-            String result = todoServices.deleteTask(deleteNoteRequest);
+            TaskResponse result = todoServices.taskPriorityTo(priority);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
+        }catch (TodoExceptions e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/changePriority1")
+    public ResponseEntity<?> taskPriorityTo(@RequestBody TaskPriorityToLessImportantRequest priority){
+        try{
+            TaskResponse result = todoServices.taskPriorityTo(priority);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
+        }catch (TodoExceptions e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/changePriority2")
+    public ResponseEntity<?> taskPriorityTo(@RequestBody TaskPriorityToUrgentRequest priority){
+        try{
+            TaskResponse result = todoServices.taskPriorityTo(priority);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
+        }catch (TodoExceptions e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/changePriority3")
+    public ResponseEntity<?> taskPriorityTo(@RequestBody TaskPriorityToLessUrgentRequest priority){
+        try{
+            TaskResponse result = todoServices.taskPriorityTo(priority);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
+        }catch (TodoExceptions e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> DeleteNote(@RequestBody DeleteTaskRequest deleteTaskRequest){
+        try{
+            String result = todoServices.deleteTask(deleteTaskRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions |InputMismatchException e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
@@ -118,6 +161,7 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
+
     @GetMapping("/getTask")
     public ResponseEntity<?> getAllTaskStarted(@RequestBody GetTaskRequest getTaskRequest){
         try{
@@ -127,6 +171,8 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
+
+
     @GetMapping("/getTaskCreated")
     public ResponseEntity<?> getAllTaskCreated(@RequestBody GetTaskRequest getTaskRequest){
         try{
@@ -136,6 +182,7 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
+
     @GetMapping("/getTaskInProgress")
     public ResponseEntity<?> getAllTaskInProgress(@RequestBody GetTaskRequest getTaskRequest){
         try{
@@ -145,6 +192,7 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
+
     @GetMapping("/getTaskDone")
     public ResponseEntity<?> getAllTaskCompleted(@RequestBody GetTaskRequest getTaskRequest){
         try{
@@ -154,6 +202,7 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
+
     @GetMapping ("/getTaskFor")
     public ResponseEntity<?> getTaskFor(@RequestBody GetTaskRequest getTaskRequest){
         try{

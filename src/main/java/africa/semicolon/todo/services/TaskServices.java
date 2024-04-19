@@ -26,8 +26,15 @@ public interface TaskServices {
 
     List<Task> getAllTask();
 
-    String deleteTask(CreateTaskRequest createTaskRequest);
+    String deleteTask(DeleteTaskRequest deleteTaskRequest);
 
+    TaskResponse taskPriorityTo(TaskPriorityToImportantRequest priority);
+
+    TaskResponse taskPriorityTo(TaskPriorityToLessImportantRequest priority);
+
+    TaskResponse taskPriorityToUrg(TaskPriorityToUrgentRequest priority);
+
+    TaskResponse taskPriorityToLessUrg(TaskPriorityToLessUrgentRequest priority);
 
     TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest);
 

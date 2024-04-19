@@ -16,5 +16,6 @@ public class Task {
     private Level priority;
     private LocalDateTime timeCreated = LocalDateTime.now();
     private LocalDateTime timeDone = LocalDateTime.now();
+    private String description;
     private String author;
 }

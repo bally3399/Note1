@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class CreateTaskRequest {
     private String title;
-    private Level description;
+    private Level priority;
     private String author;
+    private String description;
 }

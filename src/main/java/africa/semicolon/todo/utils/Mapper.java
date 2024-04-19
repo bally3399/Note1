@@ -30,7 +30,8 @@ public class Mapper {
     public static Task map(CreateTaskRequest createTaskRequest){
         Task task = new Task();
         task.setTitle(createTaskRequest.getTitle());
-        task.setPriority(createTaskRequest.getDescription());
+        task.setPriority(createTaskRequest.getPriority());
+        task.setDescription(createTaskRequest.getDescription());
         task.setTimeCreated(LocalDateTime.now());
         task.setAuthor(createTaskRequest.getAuthor().toLowerCase());
         task.setId(task.getId());
@@ -40,7 +41,7 @@ public class Mapper {
     public static TaskResponse map(Task savedTask){
         TaskResponse response = new TaskResponse();
         response.setTitle(savedTask.getTitle());
-        response.setDescription(savedTask.getPriority());
+        response.setPriority(savedTask.getPriority());
         response.setTimeCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh-mm-ss").format(savedTask.getTimeCreated()));
         response.setTimeDone(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh-mm-ss").format(savedTask.getTimeDone()));
         response.setAuthor(savedTask.getAuthor());
@@ -50,7 +51,8 @@ public class Mapper {
     public static CreateTaskResponse mapTask(Task savedTask){
         CreateTaskResponse response = new CreateTaskResponse();
         response.setTitle(savedTask.getTitle());
-        response.setDescription(savedTask.getPriority());
+        response.setDescription(savedTask.getDescription());
+        response.setPriority(savedTask.getPriority());
         response.setTimeCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh-mm-ss").format(savedTask.getTimeCreated()));
         response.setAuthor(savedTask.getAuthor());
         response.setStatus(savedTask.getStatus());

@@ -6,6 +6,7 @@ import africa.semicolon.todo.data.repositories.TodoRepository;
 import africa.semicolon.todo.dtos.request.*;
 import africa.semicolon.todo.dtos.response.CreateTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
+import africa.semicolon.todo.exceptions.IncorrectPassword;
 import africa.semicolon.todo.exceptions.UserAlreadyExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -85,7 +86,7 @@ public class TodoServicesImplTest {
         registerUserRequest.setPassword("password");
         try {
             todoServices.registerUser(registerUserRequest);
-        }catch(InputMismatchException e){
+        }catch(UserAlreadyExistException e){
             assertEquals(e.getMessage(), "Invalid Input");
         }
 
@@ -98,7 +99,7 @@ public class TodoServicesImplTest {
         registerUserRequest.setPassword("");
         try {
             todoServices.registerUser(registerUserRequest);
-        }catch(InputMismatchException e){
+        }catch(IncorrectPassword e){
             assertEquals(e.getMessage(), "Invalid Password provide a Password");
         }
     }
@@ -110,7 +111,7 @@ public class TodoServicesImplTest {
         registerUserRequest.setPassword("password");
         try {
             todoServices.registerUser(registerUserRequest);
-        }catch(InputMismatchException e){
+        }catch(UserAlreadyExistException e){
             assertEquals(e.getMessage(), "Invalid Input");
         }
     }
@@ -171,12 +172,12 @@ public class TodoServicesImplTest {
 
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
-        createTaskRequest.setDescription(Level.IMPORTANT);
+        createTaskRequest.setPriority(Level.IMPORTANT);
         createTaskRequest.setAuthor("Bally");
         CreateTaskResponse task = todoServices.createTask(createTaskRequest);
         assertEquals("title", task.getTitle());
-        assertEquals(Level.IMPORTANT, task.getDescription());
-        assertEquals(1, taskServices.getTaskFor("Bally").size());
+        assertEquals(Level.IMPORTANT, task.getPriority());
+        assertEquals(1, taskServices.getTaskFor("bally").size());
 
 
     }
@@ -195,7 +196,7 @@ public class TodoServicesImplTest {
 
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
-        createTaskRequest.setDescription(Level.LESS_IMPORTANT);
+        createTaskRequest.setPriority(Level.LESS_IMPORTANT);
         createTaskRequest.setAuthor("Bally");
         todoServices.createTask(createTaskRequest);
         assertEquals(todoServices.findTaskByTitle("title").getTitle(),"title");
@@ -215,25 +216,25 @@ public class TodoServicesImplTest {
 
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
-        createTaskRequest.setDescription(Level.LESS_IMPORTANT);
+        createTaskRequest.setPriority(Level.LESS_IMPORTANT);
         createTaskRequest.setAuthor("Bally");
         todoServices.createTask(createTaskRequest);
 
         UpdateTaskRequest updateNoteRequest = new UpdateTaskRequest();
         updateNoteRequest.setTitle("title");
         updateNoteRequest.setNewTitle("newTitle");
-        updateNoteRequest.setDescription(Level.LESS_IMPORTANT);
-        updateNoteRequest.setNewDescription(Level.IMPORTANT);
+        updateNoteRequest.setPriority(Level.LESS_IMPORTANT);
+        updateNoteRequest.setNewPriority(Level.IMPORTANT);
         updateNoteRequest.setAuthor("Bally");
 
         CreateTaskResponse task = todoServices.updateTask(updateNoteRequest);
         assertEquals("newTitle", task.getTitle());
-        assertEquals(Level.IMPORTANT, task.getDescription());
+        assertEquals(Level.IMPORTANT, task.getPriority());
         assertEquals(1, taskServices.getTaskFor("Bally").size());
     }
 
     @Test
-    public void registerUser_login_createNote_deleteNote(){
+    public void registerUser_login_createTask_deleteTask(){
         RegisterUserRequest registerUserRequest = new RegisterUserRequest();
         registerUserRequest.setUsername("Bally");
         registerUserRequest.setPassword("password");
@@ -246,13 +247,14 @@ public class TodoServicesImplTest {
 
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
-        createTaskRequest.setDescription(Level.LESS_URGENT);
+        createTaskRequest.setPriority(Level.LESS_URGENT);
         createTaskRequest.setAuthor("Bally");
-        todoServices.createTask(createTaskRequest);
+        CreateTaskResponse response = todoServices.createTask(createTaskRequest);
 
-
-
-        todoServices.deleteTask(createTaskRequest);
+        DeleteTaskRequest deleteTaskRequest = new DeleteTaskRequest();
+        deleteTaskRequest.setId(response.getId());
+        deleteTaskRequest.setAuthor("Bally");
+        todoServices.deleteTask(deleteTaskRequest);
         assertEquals(0, taskServices.getAllTask().size());
     }
     @Test
@@ -269,7 +271,7 @@ public class TodoServicesImplTest {
 
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("");
-        createTaskRequest.setDescription(Level.LESS_URGENT);
+        createTaskRequest.setPriority(Level.LESS_URGENT);
         createTaskRequest.setAuthor("Bally");
         try {
             todoServices.createTask(createTaskRequest);
@@ -292,7 +294,7 @@ public class TodoServicesImplTest {
 
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
-        createTaskRequest.setDescription(Level.URGENT);
+        createTaskRequest.setPriority(Level.URGENT);
         createTaskRequest.setAuthor("");
         try {
             todoServices.createTask(createTaskRequest);
@@ -312,7 +314,7 @@ public class TodoServicesImplTest {
         loginUserRequest.setPassword("password");
         try {
             todoServices.login(loginUserRequest);
-        }catch(InputMismatchException e){
+        }catch(UserAlreadyExistException e){
             assertEquals(e.getMessage(),"Invalid Input");
         }
     }
@@ -330,17 +332,17 @@ public class TodoServicesImplTest {
 
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
-        createTaskRequest.setDescription(Level.LESS_IMPORTANT);
+        createTaskRequest.setPriority(Level.LESS_IMPORTANT);
         createTaskRequest.setAuthor("Bally");
-        todoServices.createTask(createTaskRequest);
+        CreateTaskResponse response = todoServices.createTask(createTaskRequest);
 
         TaskInProgressRequest inProgressRequest = new TaskInProgressRequest();
-        inProgressRequest.setTitle("title");
-        inProgressRequest.setDescription(Level.LESS_IMPORTANT);
+        inProgressRequest.setId(response.getId());
+        inProgressRequest.setPriority(Level.LESS_IMPORTANT);
         inProgressRequest.setAuthor("Bally");
         TaskResponse task = todoServices.taskInProgress(inProgressRequest);
 
-        assertEquals(Level.LESS_IMPORTANT, task.getDescription());
+        assertEquals(Level.LESS_IMPORTANT, task.getPriority());
         assertEquals(Status.IN_PROGRESS, task.getStatus());
         assertEquals(1, taskServices.getTaskFor("Bally").size());
     }
@@ -359,28 +361,28 @@ public class TodoServicesImplTest {
 
         CreateTaskRequest createTaskRequest = new CreateTaskRequest();
         createTaskRequest.setTitle("title");
-        createTaskRequest.setDescription(Level.LESS_IMPORTANT);
+        createTaskRequest.setPriority(Level.LESS_IMPORTANT);
         createTaskRequest.setAuthor("Bally");
-        todoServices.createTask(createTaskRequest);
+        CreateTaskResponse response = todoServices.createTask(createTaskRequest);
 
         StartedTaskRequest startedTaskRequest = new StartedTaskRequest();
-        startedTaskRequest.setTitle("title");
-        startedTaskRequest.setDescription(Level.LESS_IMPORTANT);
+        startedTaskRequest.setId(response.getId());
+        startedTaskRequest.setId(response.getId());
         startedTaskRequest.setAuthor("Bally");
-        todoServices.startedTask(startedTaskRequest);
+        CreateTaskResponse response1 = todoServices.startedTask(startedTaskRequest);
 
         TaskInProgressRequest inProgressRequest = new TaskInProgressRequest();
-        inProgressRequest.setTitle("title");
-        inProgressRequest.setDescription(Level.LESS_IMPORTANT);
+        inProgressRequest.setId(response1.getId());
+        inProgressRequest.setPriority(Level.LESS_IMPORTANT);
         inProgressRequest.setAuthor("Bally");
         todoServices.taskInProgress(inProgressRequest);
 
         TaskCompletedRequest taskCompletedRequest = new TaskCompletedRequest();
-        taskCompletedRequest.setTitle("title");
-        taskCompletedRequest.setDescription(Level.LESS_IMPORTANT);
+        taskCompletedRequest.setId(response1.getId());
+        taskCompletedRequest.setId(response1.getId());
         taskCompletedRequest.setAuthor("Bally");
         TaskResponse task = todoServices.taskCompleted(taskCompletedRequest);
-        assertEquals(Level.LESS_IMPORTANT, task.getDescription());
+        assertEquals(Level.LESS_IMPORTANT, task.getPriority());
         assertEquals(Status.COMPLETED, task.getStatus());
         assertEquals(1, taskServices.getTaskFor("Bally").size());
     }

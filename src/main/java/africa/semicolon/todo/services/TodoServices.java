@@ -24,7 +24,7 @@ public interface TodoServices {
 
     CreateTaskResponse updateTask(UpdateTaskRequest updateNoteRequest);
 
-    String deleteTask(CreateTaskRequest createTaskRequest);
+    String deleteTask(DeleteTaskRequest deleteTaskRequest);
 
     List<Task> getAllTask();
 
@@ -37,6 +37,14 @@ public interface TodoServices {
     List<Task> getAllTaskCreated(String user);
 
     List<Task> getAllTaskInProgress(String user);
+
+    TaskResponse taskPriorityTo(TaskPriorityToImportantRequest priority);
+
+    TaskResponse taskPriorityTo(TaskPriorityToLessImportantRequest priority);
+
+    TaskResponse taskPriorityTo(TaskPriorityToUrgentRequest priority);
+
+    TaskResponse taskPriorityTo(TaskPriorityToLessUrgentRequest priority);
 
     TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest);
 

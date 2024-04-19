@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class DeleteTaskRequest {
     private String id;
+    private String author;
 }
