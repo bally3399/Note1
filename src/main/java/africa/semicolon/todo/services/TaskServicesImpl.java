@@ -6,7 +6,6 @@ import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.data.repositories.TaskRepository;
 import africa.semicolon.todo.dtos.request.*;
 import africa.semicolon.todo.dtos.response.CreateTaskResponse;
-import africa.semicolon.todo.dtos.response.StartedTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.exceptions.TaskNotFoundException;
 import lombok.AllArgsConstructor;
@@ -31,7 +30,7 @@ public class TaskServicesImpl implements TaskServices{
         }
         Task task = map(createTaskRequest);
         task.setStatus(Status.CREATED);
-        CreateTaskResponse response = mapTask(task, createTaskRequest);
+        CreateTaskResponse response = mapTask(task);
         taskRepository.save(task);
         return response;
     }
@@ -169,12 +168,12 @@ public class TaskServicesImpl implements TaskServices{
         return map(foundTask.get());
     }
     @Override
-    public StartedTaskResponse startedTask(StartedTaskRequest startedTaskRequest) {
+    public CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest) {
         if(startedTaskRequest.getId().trim().isEmpty())throw new InputMismatchException("Title not found");
         Optional<Task> foundTask =  taskRepository.findById(startedTaskRequest.getId());
         foundTask.get().setStatus(Status.STARTED);
         taskRepository.save(foundTask.get());
-        return mapTask1(foundTask.get());
+        return mapTask(foundTask.get());
     }
 
     private static void validateTask(CreateTaskRequest createTaskRequest) {

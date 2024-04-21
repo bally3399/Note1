@@ -3,7 +3,6 @@ package africa.semicolon.todo.services;
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.dtos.request.*;
 import africa.semicolon.todo.dtos.response.CreateTaskResponse;
-import africa.semicolon.todo.dtos.response.StartedTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 
 import java.util.List;
@@ -41,5 +40,5 @@ public interface TaskServices {
 
     TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest);
 
-    StartedTaskResponse startedTask(StartedTaskRequest startedTaskRequest);
+    CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest);
 }

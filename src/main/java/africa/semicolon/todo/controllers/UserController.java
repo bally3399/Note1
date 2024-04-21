@@ -2,10 +2,7 @@ package africa.semicolon.todo.controllers;
 
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.dtos.request.*;
-import africa.semicolon.todo.dtos.response.CreateTaskResponse;
-import africa.semicolon.todo.dtos.response.TaskResponse;
-import africa.semicolon.todo.dtos.response.ApiResponse;
-import africa.semicolon.todo.dtos.response.UserResponse;
+import africa.semicolon.todo.dtos.response.*;
 import africa.semicolon.todo.exceptions.TodoExceptions;
 import africa.semicolon.todo.services.TodoServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +34,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginUserRequest loginUserRequest) {
         try {
-            UserResponse result = todoServices.login(loginUserRequest);
+            LoginUserResponse result = todoServices.login(loginUserRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         } catch (TodoExceptions | InputMismatchException e) {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);

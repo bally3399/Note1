@@ -3,17 +3,14 @@ package africa.semicolon.todo.services;
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.data.model.Todo;
 import africa.semicolon.todo.dtos.request.*;
-import africa.semicolon.todo.dtos.response.CreateTaskResponse;
-import africa.semicolon.todo.dtos.response.StartedTaskResponse;
-import africa.semicolon.todo.dtos.response.TaskResponse;
-import africa.semicolon.todo.dtos.response.UserResponse;
+import africa.semicolon.todo.dtos.response.*;
 
 import java.util.List;
 
 public interface TodoServices {
     UserResponse registerUser(RegisterUserRequest registerUserRequest);
 
-    UserResponse login(LoginUserRequest loginUserRequest);
+    LoginUserResponse login(LoginUserRequest loginUserRequest);
 
     String logout(LogoutRequest logoutRequest);
 
@@ -49,7 +46,7 @@ public interface TodoServices {
 
     TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest);
 
-    StartedTaskResponse startedTask(StartedTaskRequest startedTaskRequest);
+    CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest);
 
     TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest);
 }

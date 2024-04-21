@@ -5,10 +5,7 @@ import africa.semicolon.todo.data.model.Todo;
 import africa.semicolon.todo.data.repositories.TaskRepository;
 import africa.semicolon.todo.data.repositories.TodoRepository;
 import africa.semicolon.todo.dtos.request.*;
-import africa.semicolon.todo.dtos.response.CreateTaskResponse;
-import africa.semicolon.todo.dtos.response.StartedTaskResponse;
-import africa.semicolon.todo.dtos.response.TaskResponse;
-import africa.semicolon.todo.dtos.response.UserResponse;
+import africa.semicolon.todo.dtos.response.*;
 import africa.semicolon.todo.exceptions.IncorrectPassword;
 import africa.semicolon.todo.exceptions.TaskNotFoundException;
 import africa.semicolon.todo.exceptions.UserAlreadyExistException;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static africa.semicolon.todo.utils.Mapper.map;
+import static africa.semicolon.todo.utils.Mapper.mapLogin;
 
 @Service
 @AllArgsConstructor
@@ -31,7 +29,7 @@ public class TodoServicesImpl implements TodoServices{
         Todo todo = todoRepository.findByUsername(registerUserRequest.getUsername().toLowerCase());
         if (todo == null) {
             Todo newTodo = map(registerUserRequest);
-            UserResponse response = map(newTodo);
+            UserResponse response = map(newTodo, registerUserRequest);
             todoRepository.save(newTodo);
             return response;
         }
@@ -45,10 +43,10 @@ public class TodoServicesImpl implements TodoServices{
     }
 
     @Override
-    public UserResponse login(LoginUserRequest loginUserRequest) {
+    public LoginUserResponse login(LoginUserRequest loginUserRequest) {
         validateLogin(loginUserRequest);
         Todo newTodo = todoRepository.findByUsername(loginUserRequest.getUsername().toLowerCase());
-        UserResponse response = map(newTodo);
+        LoginUserResponse response = mapLogin(newTodo, loginUserRequest);
         newTodo.setLoggedIn(true);
         if (!newTodo.getPassword().equals(loginUserRequest.getPassword())) throw new IncorrectPassword("Incorrect password");
         todoRepository.save(newTodo);
@@ -170,7 +168,7 @@ public class TodoServicesImpl implements TodoServices{
         return taskServices.taskInProgress(inProgressRequest);
     }
     @Override
-    public StartedTaskResponse startedTask(StartedTaskRequest startedTaskRequest){
+    public CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest){
         Todo todo = todoRepository.findByUsername(startedTaskRequest.getAuthor().toLowerCase());
         if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
         return taskServices.startedTask(startedTaskRequest);

@@ -4,31 +4,36 @@ import africa.semicolon.todo.data.model.Status;
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.data.model.Todo;
 import africa.semicolon.todo.dtos.request.CreateTaskRequest;
+import africa.semicolon.todo.dtos.request.LoginUserRequest;
 import africa.semicolon.todo.dtos.request.RegisterUserRequest;
-import africa.semicolon.todo.dtos.response.CreateTaskResponse;
-import africa.semicolon.todo.dtos.response.StartedTaskResponse;
-import africa.semicolon.todo.dtos.response.TaskResponse;
-import africa.semicolon.todo.dtos.response.UserResponse;
+import africa.semicolon.todo.dtos.response.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Mapper {
-    public static Todo map(RegisterUserRequest registerUserRequest){
+    public static Todo map(RegisterUserRequest registerUserRequest) {
         Todo todo = new Todo();
         todo.setUsername(registerUserRequest.getUsername().toLowerCase());
         todo.setPassword(registerUserRequest.getPassword());
         return todo;
     }
-    public static UserResponse map(Todo savedTodo){
+
+    public static UserResponse map(Todo savedTodo, RegisterUserRequest registerUserRequest) {
         UserResponse response = new UserResponse();
-        if(savedTodo != null){
-            response.setUsername(savedTodo.getUsername());
-            response.setMessage("Successful");
-        }
+        response.setUsername(registerUserRequest.getUsername());
+        response.setMessage("Successful");
         return response;
     }
-    public static Task map(CreateTaskRequest createTaskRequest){
+
+    public static LoginUserResponse mapLogin(Todo savedTodo, LoginUserRequest loginUserRequest) {
+        LoginUserResponse response = new LoginUserResponse();
+        response.setUsername(loginUserRequest.getUsername());
+        response.setMessage("Successful");
+        return response;
+    }
+
+    public static Task map(CreateTaskRequest createTaskRequest) {
         Task task = new Task();
         task.setTitle(createTaskRequest.getTitle());
         task.setPriority(createTaskRequest.getPriority());
@@ -38,7 +43,8 @@ public class Mapper {
         task.setStatus(Status.CREATED);
         return task;
     }
-    public static TaskResponse map(Task savedTask){
+
+    public static TaskResponse map(Task savedTask) {
         TaskResponse response = new TaskResponse();
         response.setTitle(savedTask.getTitle());
         response.setPriority(savedTask.getPriority());
@@ -48,18 +54,9 @@ public class Mapper {
         response.setStatus(savedTask.getStatus());
         return response;
     }
-    public static CreateTaskResponse mapTask(Task savedTask, CreateTaskRequest createTaskRequest){
+
+    public static CreateTaskResponse mapTask(Task savedTask) {
         CreateTaskResponse response = new CreateTaskResponse();
-        response.setTitle(savedTask.getTitle());
-        response.setDescription(savedTask.getDescription());
-        response.setPriority(savedTask.getPriority());
-        response.setTimeCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh-mm-ss").format(savedTask.getTimeCreated()));
-        response.setAuthor(createTaskRequest.getAuthor());
-        response.setStatus(savedTask.getStatus());
-        return response;
-    }
-    public static StartedTaskResponse mapTask1(Task savedTask) {
-        StartedTaskResponse response = new StartedTaskResponse();
         response.setTitle(savedTask.getTitle());
         response.setDescription(savedTask.getDescription());
         response.setPriority(savedTask.getPriority());
