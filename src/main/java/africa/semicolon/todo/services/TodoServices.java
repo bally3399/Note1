@@ -4,6 +4,7 @@ import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.data.model.Todo;
 import africa.semicolon.todo.dtos.request.*;
 import africa.semicolon.todo.dtos.response.CreateTaskResponse;
+import africa.semicolon.todo.dtos.response.StartedTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.dtos.response.UserResponse;
 
@@ -48,7 +49,7 @@ public interface TodoServices {
 
     TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest);
 
-    CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest);
+    StartedTaskResponse startedTask(StartedTaskRequest startedTaskRequest);
 
     TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest);
 }

@@ -6,6 +6,7 @@ import africa.semicolon.todo.data.model.Todo;
 import africa.semicolon.todo.dtos.request.CreateTaskRequest;
 import africa.semicolon.todo.dtos.request.RegisterUserRequest;
 import africa.semicolon.todo.dtos.response.CreateTaskResponse;
+import africa.semicolon.todo.dtos.response.StartedTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.dtos.response.UserResponse;
 
@@ -47,8 +48,18 @@ public class Mapper {
         response.setStatus(savedTask.getStatus());
         return response;
     }
-    public static CreateTaskResponse mapTask(Task savedTask){
+    public static CreateTaskResponse mapTask(Task savedTask, CreateTaskRequest createTaskRequest){
         CreateTaskResponse response = new CreateTaskResponse();
+        response.setTitle(savedTask.getTitle());
+        response.setDescription(savedTask.getDescription());
+        response.setPriority(savedTask.getPriority());
+        response.setTimeCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh-mm-ss").format(savedTask.getTimeCreated()));
+        response.setAuthor(createTaskRequest.getAuthor());
+        response.setStatus(savedTask.getStatus());
+        return response;
+    }
+    public static StartedTaskResponse mapTask1(Task savedTask) {
+        StartedTaskResponse response = new StartedTaskResponse();
         response.setTitle(savedTask.getTitle());
         response.setDescription(savedTask.getDescription());
         response.setPriority(savedTask.getPriority());

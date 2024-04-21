@@ -6,6 +6,7 @@ import africa.semicolon.todo.data.repositories.TaskRepository;
 import africa.semicolon.todo.data.repositories.TodoRepository;
 import africa.semicolon.todo.dtos.request.*;
 import africa.semicolon.todo.dtos.response.CreateTaskResponse;
+import africa.semicolon.todo.dtos.response.StartedTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.dtos.response.UserResponse;
 import africa.semicolon.todo.exceptions.IncorrectPassword;
@@ -71,8 +72,7 @@ public class TodoServicesImpl implements TodoServices{
     @Override
     public CreateTaskResponse createTask(CreateTaskRequest createTaskRequest) {
         Todo todo = todoRepository.findByUsername(createTaskRequest.getAuthor().toLowerCase());
-        if(todo.getUsername().equals(createTaskRequest.getTitle())) throw new UserAlreadyExistException("Title already for user");
-        todo.setLoggedIn(true);
+        if(todo != null)todo.setLoggedIn(true);
         return taskServices.createTask(createTaskRequest);
     }
 
@@ -170,7 +170,7 @@ public class TodoServicesImpl implements TodoServices{
         return taskServices.taskInProgress(inProgressRequest);
     }
     @Override
-    public CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest){
+    public StartedTaskResponse startedTask(StartedTaskRequest startedTaskRequest){
         Todo todo = todoRepository.findByUsername(startedTaskRequest.getAuthor().toLowerCase());
         if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
         return taskServices.startedTask(startedTaskRequest);

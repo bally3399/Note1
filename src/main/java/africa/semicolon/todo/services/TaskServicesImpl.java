@@ -6,6 +6,7 @@ import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.data.repositories.TaskRepository;
 import africa.semicolon.todo.dtos.request.*;
 import africa.semicolon.todo.dtos.response.CreateTaskResponse;
+import africa.semicolon.todo.dtos.response.StartedTaskResponse;
 import africa.semicolon.todo.dtos.response.TaskResponse;
 import africa.semicolon.todo.exceptions.TaskNotFoundException;
 import lombok.AllArgsConstructor;
@@ -16,8 +17,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Optional;
 
-import static africa.semicolon.todo.utils.Mapper.map;
-import static africa.semicolon.todo.utils.Mapper.mapTask;
+import static africa.semicolon.todo.utils.Mapper.*;
 
 @Service
 @AllArgsConstructor
@@ -27,11 +27,11 @@ public class TaskServicesImpl implements TaskServices{
     public CreateTaskResponse createTask(CreateTaskRequest createTaskRequest) {
         validateTask(createTaskRequest);
         for(Task tasks : taskRepository.findAll()){
-            if(tasks.getTitle().equals(createTaskRequest.getTitle())) throw new TaskNotFoundException("Task Already Exist");
+            if(tasks.getTitle().equals(createTaskRequest.getTitle())&& createTaskRequest.getAuthor().equals(tasks.getAuthor())) throw new TaskNotFoundException("Task Already Exist");
         }
         Task task = map(createTaskRequest);
         task.setStatus(Status.CREATED);
-        CreateTaskResponse response = mapTask(task);
+        CreateTaskResponse response = mapTask(task, createTaskRequest);
         taskRepository.save(task);
         return response;
     }
@@ -169,12 +169,12 @@ public class TaskServicesImpl implements TaskServices{
         return map(foundTask.get());
     }
     @Override
-    public CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest) {
+    public StartedTaskResponse startedTask(StartedTaskRequest startedTaskRequest) {
         if(startedTaskRequest.getId().trim().isEmpty())throw new InputMismatchException("Title not found");
         Optional<Task> foundTask =  taskRepository.findById(startedTaskRequest.getId());
         foundTask.get().setStatus(Status.STARTED);
         taskRepository.save(foundTask.get());
-        return mapTask(foundTask.get());
+        return mapTask1(foundTask.get());
     }
 
     private static void validateTask(CreateTaskRequest createTaskRequest) {
