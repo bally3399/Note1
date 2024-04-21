@@ -71,7 +71,8 @@ public class TodoServicesImpl implements TodoServices{
     @Override
     public CreateTaskResponse createTask(CreateTaskRequest createTaskRequest) {
         Todo todo = todoRepository.findByUsername(createTaskRequest.getAuthor().toLowerCase());
-        if(todo != null) todo.setLoggedIn(true);
+        if(todo.getUsername().equals(createTaskRequest.getTitle())) throw new UserAlreadyExistException("Title already for user");
+        todo.setLoggedIn(true);
         return taskServices.createTask(createTaskRequest);
     }
 

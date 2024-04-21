@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class CreateTaskResponse {
-    private String id;
     private String title;
     private String timeCreated;
     private Status status;

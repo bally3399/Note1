@@ -34,7 +34,6 @@ public class Mapper {
         task.setDescription(createTaskRequest.getDescription());
         task.setTimeCreated(LocalDateTime.now());
         task.setAuthor(createTaskRequest.getAuthor().toLowerCase());
-        task.setId(task.getId());
         task.setStatus(Status.CREATED);
         return task;
     }
