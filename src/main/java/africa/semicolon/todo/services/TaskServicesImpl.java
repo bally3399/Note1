@@ -111,8 +111,8 @@ public class TaskServicesImpl implements TaskServices{
     public String deleteTask(DeleteTaskRequest deleteTaskRequest) {
         if(deleteTaskRequest.getId().trim().isEmpty())throw new InputMismatchException("Title not found");
         Optional<Task> foundTask = taskRepository.findById(deleteTaskRequest.getId());
-        foundTask.ifPresent(taskRepository::delete);
-        throw new TaskNotFoundException("Task not found");
+        taskRepository.delete(foundTask.get());
+        return "Task Deleted Successfully";
     }
 
     @Override
