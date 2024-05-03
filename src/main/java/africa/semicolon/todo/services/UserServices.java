@@ -1,26 +1,26 @@
 package africa.semicolon.todo.services;
 
 import africa.semicolon.todo.data.model.Task;
-import africa.semicolon.todo.data.model.Todo;
+import africa.semicolon.todo.data.model.User;
 import africa.semicolon.todo.dtos.request.*;
 import africa.semicolon.todo.dtos.response.*;
 
 import java.util.List;
 
-public interface TodoServices {
+public interface UserServices {
     UserResponse registerUser(RegisterUserRequest registerUserRequest);
 
     LoginUserResponse login(LoginUserRequest loginUserRequest);
 
     String logout(LogoutRequest logoutRequest);
 
-    Todo findByUser(String bally);
+    User findByUser(String bally);
 
     CreateTaskResponse createTask(CreateTaskRequest createTaskRequest);
 
     Task findTaskByTitle(String title);
 
-    CreateTaskResponse updateTask(UpdateTaskRequest updateNoteRequest);
+    UpdateTaskResponse updateTask(UpdateTaskRequest updateNoteRequest);
 
     String deleteTask(DeleteTaskRequest deleteTaskRequest);
 
@@ -44,9 +44,12 @@ public interface TodoServices {
 
     TaskResponse taskPriorityTo(TaskPriorityToLessUrgentRequest priority);
 
-    TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest);
+    TaskInProgressResponse taskInProgress(TaskInProgressRequest inProgressRequest);
 
-    CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest);
+    StartedTaskResponse startedTask(StartedTaskRequest startedTaskRequest);
 
-    TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest);
+    TaskDoneResponse taskCompleted(TaskCompletedRequest taskCompletedRequest);
+
+    AssignTaskResponse assignTask(AssignTaskRequest assignTaskRequest);
+
 }

@@ -7,8 +7,6 @@ import lombok.Data;
 public class UpdateTaskRequest {
     private String title;
     private String newTitle;
-    private Level priority;
-    private Level newPriority;
     private String description;
     private String author;
 }

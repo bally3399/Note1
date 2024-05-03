@@ -7,5 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class ApiResponse {
     boolean isSuccessful;
-    Object result;
+    Object data;
 }

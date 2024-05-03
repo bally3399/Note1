@@ -2,9 +2,8 @@ package africa.semicolon.todo.utils;
 
 import africa.semicolon.todo.data.model.Status;
 import africa.semicolon.todo.data.model.Task;
-import africa.semicolon.todo.data.model.Todo;
+import africa.semicolon.todo.data.model.User;
 import africa.semicolon.todo.dtos.request.CreateTaskRequest;
-import africa.semicolon.todo.dtos.request.LoginUserRequest;
 import africa.semicolon.todo.dtos.request.RegisterUserRequest;
 import africa.semicolon.todo.dtos.response.*;
 
@@ -12,23 +11,21 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Mapper {
-    public static Todo map(RegisterUserRequest registerUserRequest) {
-        Todo todo = new Todo();
+    public static User map(RegisterUserRequest registerUserRequest) {
+        User todo = new User();
         todo.setUsername(registerUserRequest.getUsername().toLowerCase());
         todo.setPassword(registerUserRequest.getPassword());
         return todo;
     }
 
-    public static UserResponse map(Todo savedTodo, RegisterUserRequest registerUserRequest) {
+    public static UserResponse map(User savedTodo) {
         UserResponse response = new UserResponse();
-        response.setUsername(registerUserRequest.getUsername());
-        response.setMessage("Successful");
+        response.setMessage("Successfully registered");
         return response;
     }
 
-    public static LoginUserResponse mapLogin(Todo savedTodo, LoginUserRequest loginUserRequest) {
+    public static LoginUserResponse mapLogin(User savedTodo) {
         LoginUserResponse response = new LoginUserResponse();
-        response.setUsername(loginUserRequest.getUsername());
         response.setMessage("Successful");
         return response;
     }
@@ -48,8 +45,10 @@ public class Mapper {
         TaskResponse response = new TaskResponse();
         response.setTitle(savedTask.getTitle());
         response.setPriority(savedTask.getPriority());
-        response.setTimeCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh-mm-ss").format(savedTask.getTimeCreated()));
-        response.setTimeDone(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh-mm-ss").format(savedTask.getTimeDone()));
+        response.setTimeCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(savedTask.getTimeCreated()));
+        response.setTimeStarted(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(savedTask.getTimeStarted()));
+        response.setTimeInProgress(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(savedTask.getTimeInProgress()));
+        response.setTimeDone(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(savedTask.getTimeDone()));
         response.setAuthor(savedTask.getAuthor());
         response.setStatus(savedTask.getStatus());
         return response;
@@ -60,9 +59,66 @@ public class Mapper {
         response.setTitle(savedTask.getTitle());
         response.setDescription(savedTask.getDescription());
         response.setPriority(savedTask.getPriority());
-        response.setTimeCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh-mm-ss").format(savedTask.getTimeCreated()));
+        response.setTimeCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(savedTask.getTimeCreated()));
         response.setAuthor(savedTask.getAuthor());
         response.setStatus(savedTask.getStatus());
+        response.setId(savedTask.getId());
         return response;
     }
+    public static StartedTaskResponse mapStartedTask(Task savedTask) {
+        StartedTaskResponse response = new StartedTaskResponse();
+        response.setTitle(savedTask.getTitle());
+        response.setDescription(savedTask.getDescription());
+        response.setPriority(savedTask.getPriority());
+        response.setAuthor(savedTask.getAuthor());
+        response.setStatus(savedTask.getStatus());
+        response.setTimeCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(savedTask.getTimeCreated()));
+        response.setTimeStarted(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(savedTask.getTimeStarted()));
+        return response;
+    }
+    public static TaskInProgressResponse mapTaskInProgress(Task savedTask) {
+        TaskInProgressResponse response = new TaskInProgressResponse();
+        response.setTitle(savedTask.getTitle());
+        response.setDescription(savedTask.getDescription());
+        response.setPriority(savedTask.getPriority());
+        response.setAuthor(savedTask.getAuthor());
+        response.setStatus(savedTask.getStatus());
+        response.setTimeStarted(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(savedTask.getTimeStarted()));
+        response.setTimeInProgress(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(LocalDateTime.now()));
+        return response;
+    }
+    public static UpdateTaskResponse mapUpdateTask(Task savedTask) {
+        UpdateTaskResponse response = new UpdateTaskResponse();
+        response.setTitle(savedTask.getTitle());
+        response.setDescription(savedTask.getDescription());
+        response.setPriority(savedTask.getPriority());
+        response.setAuthor(savedTask.getAuthor());
+        response.setStatus(savedTask.getStatus());
+        response.setTimeCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(savedTask.getTimeCreated()));
+        response.setTimeUpdated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(LocalDateTime.now()));
+        return response;
+    }
+    public static TaskDoneResponse mapTaskDone(Task savedTask) {
+        TaskDoneResponse response = new TaskDoneResponse();
+        response.setTitle(savedTask.getTitle());
+        response.setDescription(savedTask.getDescription());
+        response.setPriority(savedTask.getPriority());
+        response.setAuthor(savedTask.getAuthor());
+        response.setStatus(savedTask.getStatus());
+        response.setTimeCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(savedTask.getTimeCreated()));
+        response.setTimeDone(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(LocalDateTime.now()));
+        return response;
+    }
+    public static AssignTaskResponse mapAssignTask(Task savedTask) {
+        AssignTaskResponse response = new AssignTaskResponse();
+        response.setTitle(savedTask.getTitle());
+        response.setDescription(savedTask.getDescription());
+        response.setPriority(savedTask.getPriority());
+        response.setAuthor(savedTask.getAuthor());
+        response.setStatus(savedTask.getStatus());
+        response.setTimeCreated(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(savedTask.getTimeCreated()));
+        response.setId(savedTask.getId());
+        return response;
+    }
+
 }

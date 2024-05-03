@@ -5,14 +5,13 @@ import africa.semicolon.todo.data.model.Status;
 import lombok.Data;
 
 @Data
-public class TaskResponse {
+public class AssignTaskResponse {
+    private String id;
     private String title;
     private String timeCreated;
-    private String timeStarted;
-    private String timeInProgress;
     private Status status;
     private Level priority;
-    private String timeDone;
     private String author;
     private String description;
+
 }

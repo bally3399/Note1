@@ -6,6 +6,5 @@ import lombok.Data;
 @Data
 public class TaskPriorityToUrgentRequest {
     private String id;
-    private Status status;
     private String author;
 }

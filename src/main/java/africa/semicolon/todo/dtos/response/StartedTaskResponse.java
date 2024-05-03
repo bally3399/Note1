@@ -4,15 +4,15 @@ import africa.semicolon.todo.data.model.Level;
 import africa.semicolon.todo.data.model.Status;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
-public class TaskResponse {
+public class StartedTaskResponse {
     private String title;
     private String timeCreated;
     private String timeStarted;
-    private String timeInProgress;
     private Status status;
     private Level priority;
-    private String timeDone;
     private String author;
     private String description;
 }

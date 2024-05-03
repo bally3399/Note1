@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 public class TaskPriorityToImportantRequest {
     private String id;
-    private Status status;
     private String author;
 
 }

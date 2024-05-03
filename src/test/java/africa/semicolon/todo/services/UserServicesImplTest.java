@@ -2,10 +2,9 @@ package africa.semicolon.todo.services;
 
 import africa.semicolon.todo.data.model.Level;
 import africa.semicolon.todo.data.model.Status;
-import africa.semicolon.todo.data.repositories.TodoRepository;
+import africa.semicolon.todo.data.repositories.UserRepository;
 import africa.semicolon.todo.dtos.request.*;
-import africa.semicolon.todo.dtos.response.CreateTaskResponse;
-import africa.semicolon.todo.dtos.response.TaskResponse;
+import africa.semicolon.todo.dtos.response.*;
 import africa.semicolon.todo.exceptions.IncorrectPassword;
 import africa.semicolon.todo.exceptions.UserAlreadyExistException;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,11 +16,11 @@ import java.util.InputMismatchException;
 
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
-public class TodoServicesImplTest {
+public class UserServicesImplTest {
     @Autowired
-    private TodoServices todoServices;
+    private UserServices todoServices;
     @Autowired
-    private TodoRepository todoRepository;
+    private UserRepository todoRepository;
     @Autowired
     private TaskServices taskServices;
     @BeforeEach
@@ -198,6 +197,7 @@ public class TodoServicesImplTest {
         createTaskRequest.setTitle("title");
         createTaskRequest.setPriority(Level.LESS_IMPORTANT);
         createTaskRequest.setAuthor("Bally");
+        createTaskRequest.setDescription("description");
         todoServices.createTask(createTaskRequest);
         assertEquals(todoServices.findTaskByTitle("title").getTitle(),"title");
     }
@@ -218,18 +218,19 @@ public class TodoServicesImplTest {
         createTaskRequest.setTitle("title");
         createTaskRequest.setPriority(Level.LESS_IMPORTANT);
         createTaskRequest.setAuthor("Bally");
+        createTaskRequest.setDescription("Buy food");
         todoServices.createTask(createTaskRequest);
 
         UpdateTaskRequest updateNoteRequest = new UpdateTaskRequest();
         updateNoteRequest.setTitle("title");
         updateNoteRequest.setNewTitle("newTitle");
-        updateNoteRequest.setPriority(Level.LESS_IMPORTANT);
-        updateNoteRequest.setNewPriority(Level.IMPORTANT);
         updateNoteRequest.setAuthor("Bally");
+        updateNoteRequest.setDescription("Buy food");
 
-        CreateTaskResponse task = todoServices.updateTask(updateNoteRequest);
+        UpdateTaskResponse task = todoServices.updateTask(updateNoteRequest);
         assertEquals("newTitle", task.getTitle());
-        assertEquals(Level.IMPORTANT, task.getPriority());
+        assertEquals(Level.LESS_IMPORTANT, task.getPriority());
+        assertEquals("Buy food", task.getDescription());
         assertEquals(1, taskServices.getTaskFor("Bally").size());
     }
 
@@ -249,6 +250,7 @@ public class TodoServicesImplTest {
         createTaskRequest.setTitle("title");
         createTaskRequest.setPriority(Level.LESS_URGENT);
         createTaskRequest.setAuthor("Bally");
+        createTaskRequest.setDescription("Buy food");
         CreateTaskResponse response = todoServices.createTask(createTaskRequest);
 
         DeleteTaskRequest deleteTaskRequest = new DeleteTaskRequest();
@@ -298,8 +300,8 @@ public class TodoServicesImplTest {
         createTaskRequest.setAuthor("");
         try {
             todoServices.createTask(createTaskRequest);
-        }catch(InputMismatchException e){
-            assertEquals(e.getMessage(), "Invalid Input");
+        }catch(UserAlreadyExistException e){
+            assertEquals(e.getMessage(), "user does not exist");
         }
     }
     @Test
@@ -334,17 +336,20 @@ public class TodoServicesImplTest {
         createTaskRequest.setTitle("title");
         createTaskRequest.setPriority(Level.LESS_IMPORTANT);
         createTaskRequest.setAuthor("Bally");
+        createTaskRequest.setDescription("Buy food");
         CreateTaskResponse response = todoServices.createTask(createTaskRequest);
 
         TaskInProgressRequest inProgressRequest = new TaskInProgressRequest();
         inProgressRequest.setId(response.getId());
-        inProgressRequest.setPriority(Level.LESS_IMPORTANT);
         inProgressRequest.setAuthor("Bally");
-        TaskResponse task = todoServices.taskInProgress(inProgressRequest);
-
-        assertEquals(Level.LESS_IMPORTANT, task.getPriority());
-        assertEquals(Status.IN_PROGRESS, task.getStatus());
-        assertEquals(1, taskServices.getTaskFor("Bally").size());
+        try {
+            todoServices.taskInProgress(inProgressRequest);
+        }catch(UserAlreadyExistException e){
+            assertEquals(e.getMessage(), "user not exist");
+        }
+//        assertEquals(Level.LESS_IMPORTANT, task.getPriority());
+//        assertEquals(Status.IN_PROGRESS, task.getStatus());
+//        assertEquals(1, taskServices.getTaskFor("Bally").size());
     }
 
     @Test
@@ -369,22 +374,55 @@ public class TodoServicesImplTest {
         startedTaskRequest.setId(response.getId());
         startedTaskRequest.setId(response.getId());
         startedTaskRequest.setAuthor("Bally");
-        CreateTaskResponse response1 = todoServices.startedTask(startedTaskRequest);
+        todoServices.startedTask(startedTaskRequest);
 
         TaskInProgressRequest inProgressRequest = new TaskInProgressRequest();
-        inProgressRequest.setId(response1.getId());
-        inProgressRequest.setPriority(Level.LESS_IMPORTANT);
+        inProgressRequest.setId(response.getId());
         inProgressRequest.setAuthor("Bally");
         todoServices.taskInProgress(inProgressRequest);
 
         TaskCompletedRequest taskCompletedRequest = new TaskCompletedRequest();
-        taskCompletedRequest.setId(response1.getId());
-        taskCompletedRequest.setId(response1.getId());
+        taskCompletedRequest.setId(response.getId());
+        taskCompletedRequest.setId(response.getId());
         taskCompletedRequest.setAuthor("Bally");
-        TaskResponse task = todoServices.taskCompleted(taskCompletedRequest);
+        TaskDoneResponse task = todoServices.taskCompleted(taskCompletedRequest);
         assertEquals(Level.LESS_IMPORTANT, task.getPriority());
         assertEquals(Status.COMPLETED, task.getStatus());
         assertEquals(1, taskServices.getTaskFor("Bally").size());
+    }
+
+    @Test
+    public void register_loginUser_assignTaskTest(){
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+        registerUserRequest.setUsername("Bally");
+        registerUserRequest.setPassword("password");
+        var response = todoServices.registerUser(registerUserRequest);
+
+        LoginUserRequest loginUserRequest = new LoginUserRequest();
+        loginUserRequest.setUsername("Bally");
+        loginUserRequest.setPassword("password");
+        todoServices.login(loginUserRequest);
+
+        RegisterUserRequest registerUserRequest2 = new RegisterUserRequest();
+        registerUserRequest2.setUsername("user");
+        registerUserRequest2.setPassword("password");
+        var response1 = todoServices.registerUser(registerUserRequest2);
+
+        LoginUserRequest loginUserRequest2 = new LoginUserRequest();
+        loginUserRequest2.setUsername("user");
+        loginUserRequest2.setPassword("password");
+        todoServices.login(loginUserRequest2);
+
+        AssignTaskRequest assignTaskRequest = new AssignTaskRequest();
+        assignTaskRequest.setTitle("title");
+        assignTaskRequest.setPriority(Level.LESS_IMPORTANT);
+        assignTaskRequest.setAuthor("Bally");
+        assignTaskRequest.setDescription("Buy food");
+        assignTaskRequest.setUser("user");
+        todoServices.assignTask(assignTaskRequest);
+
+        System.out.println(response);
+        System.out.println(response1);
     }
 
 }

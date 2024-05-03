@@ -2,8 +2,7 @@ package africa.semicolon.todo.services;
 
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.dtos.request.*;
-import africa.semicolon.todo.dtos.response.CreateTaskResponse;
-import africa.semicolon.todo.dtos.response.TaskResponse;
+import africa.semicolon.todo.dtos.response.*;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public interface TaskServices {
 
     void deleteAll();
 
-    CreateTaskResponse updateTask(UpdateTaskRequest task);
+    UpdateTaskResponse updateTask(UpdateTaskRequest task);
 
     List<Task> getAllTask();
 
@@ -36,9 +35,13 @@ public interface TaskServices {
 
     TaskResponse taskPriorityToLessUrg(TaskPriorityToLessUrgentRequest priority);
 
-    TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest);
+    TaskInProgressResponse taskInProgress(TaskInProgressRequest inProgressRequest);
 
-    TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest);
+    TaskDoneResponse taskCompleted(TaskCompletedRequest taskCompletedRequest);
 
-    CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest);
+    StartedTaskResponse startedTask(StartedTaskRequest startedTaskRequest);
+
+    Task findTaskById(String id);
+
+    AssignTaskResponse assignTask(AssignTaskRequest assignTaskRequest);
 }

@@ -7,6 +7,5 @@ import lombok.Data;
 @Data
 public class TaskCompletedRequest {
     private String id;
-    private Level priority;
     private String author;
 }

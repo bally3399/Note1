@@ -5,12 +5,12 @@ import africa.semicolon.todo.data.model.Status;
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.data.repositories.TaskRepository;
 import africa.semicolon.todo.dtos.request.*;
-import africa.semicolon.todo.dtos.response.CreateTaskResponse;
-import africa.semicolon.todo.dtos.response.TaskResponse;
+import africa.semicolon.todo.dtos.response.*;
 import africa.semicolon.todo.exceptions.TaskNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -25,34 +25,26 @@ public class TaskServicesImpl implements TaskServices{
     @Override
     public CreateTaskResponse createTask(CreateTaskRequest createTaskRequest) {
         validateTask(createTaskRequest);
-        for(Task tasks : taskRepository.findAll()){
-            if(tasks.getTitle().equals(createTaskRequest.getTitle())&& createTaskRequest.getAuthor().equals(tasks.getAuthor())) throw new TaskNotFoundException("Task Already Exist");
+        for(Task tasks : taskRepository.findByAuthor(createTaskRequest.getAuthor().toLowerCase())){
+            if(tasks.getTitle().equalsIgnoreCase(createTaskRequest.getTitle())) throw new TaskNotFoundException("Task Already Exist");
         }
         Task task = map(createTaskRequest);
         task.setStatus(Status.CREATED);
-        CreateTaskResponse response = mapTask(task);
         taskRepository.save(task);
-        return response;
+        return mapTask(task);
     }
 
     @Override
-    public CreateTaskResponse updateTask(UpdateTaskRequest task) {
+    public UpdateTaskResponse updateTask(UpdateTaskRequest task) {
         validateUpdate(task);
         Task updateTask = taskRepository.findByTitle(task.getTitle());
-        if (task.getTitle()!= null && task.getPriority() != null && task.getAuthor() != null){
+        if (task.getTitle()!= null && task.getAuthor() != null){
             updateTask.setTitle(task.getNewTitle());
             updateTask.setAuthor(task.getAuthor());
-            updateTask.setPriority(task.getNewPriority());
             updateTask.setDescription(task.getDescription());
         }
         Task savedTask = taskRepository.save(updateTask);
-        CreateTaskResponse taskResponse = new CreateTaskResponse();
-        taskResponse.setTitle(savedTask.getTitle());
-        taskResponse.setAuthor(savedTask.getAuthor());
-        taskResponse.setPriority(savedTask.getPriority());
-        taskResponse.setDescription(savedTask.getDescription());
-        taskResponse.setStatus(savedTask.getStatus());
-        return taskResponse;
+        return mapUpdateTask(savedTask);
     }
 
     @Override
@@ -63,7 +55,7 @@ public class TaskServicesImpl implements TaskServices{
     public List<Task> getAllTaskStarted(String user){
         List<Task> tasks = new ArrayList<>();
         for(Task task : taskRepository.findByAuthor(user)){
-            if(Status.STARTED == task.getStatus()) tasks.add(task);
+            if(Status.STARTED == task.getStatus() && task.getAuthor().equals(user)) tasks.add(task);
         }
         return tasks;
     }
@@ -72,7 +64,7 @@ public class TaskServicesImpl implements TaskServices{
     public List<Task> getAllTaskCreated(String user){
         List<Task> tasks = new ArrayList<>();
         for(Task task : taskRepository.findAll()){
-            if(Status.CREATED == task.getStatus()) tasks.add(task);
+            if(Status.CREATED == task.getStatus() && task.getAuthor().equals(user)) tasks.add(task);
         }
         return tasks;
     }
@@ -80,7 +72,7 @@ public class TaskServicesImpl implements TaskServices{
     public List<Task> getAllTaskInProgress(String user){
         List<Task> tasks = new ArrayList<>();
         for(Task task : taskRepository.findAll()){
-            if(Status.IN_PROGRESS == task.getStatus()) tasks.add(task);
+            if(Status.IN_PROGRESS == task.getStatus() && task.getAuthor().equals(user)) tasks.add(task);
         }
         return tasks;
     }
@@ -89,7 +81,7 @@ public class TaskServicesImpl implements TaskServices{
     public List<Task> getAllTaskCompleted(String user){
         List<Task> tasks = new ArrayList<>();
         for(Task task : taskRepository.findAll()){
-            if(Status.COMPLETED == task.getStatus()) tasks.add(task);
+            if(Status.COMPLETED == task.getStatus() && task.getAuthor().equals(user)) tasks.add(task);
         }
         return tasks;
     }
@@ -151,29 +143,49 @@ public class TaskServicesImpl implements TaskServices{
 
 
     @Override
-    public TaskResponse taskInProgress(TaskInProgressRequest inProgressRequest) {
+    public TaskInProgressResponse taskInProgress(TaskInProgressRequest inProgressRequest) {
         if(inProgressRequest.getId().trim().isEmpty())throw new InputMismatchException("id not found");
         Optional<Task> foundTask =  taskRepository.findById(inProgressRequest.getId());
         foundTask.get().setStatus(Status.IN_PROGRESS);
+        foundTask.get().setTimeInProgress(LocalDateTime.now());
         taskRepository.save(foundTask.get());
-        return map(foundTask.get());
+        return mapTaskInProgress(foundTask.get());
     }
 
     @Override
-    public TaskResponse taskCompleted(TaskCompletedRequest taskCompletedRequest) {
+    public TaskDoneResponse taskCompleted(TaskCompletedRequest taskCompletedRequest) {
         if(taskCompletedRequest.getId().trim().isEmpty())throw new InputMismatchException("id not found");
         Optional<Task> foundTask =  taskRepository.findById(taskCompletedRequest.getId());
         foundTask.get().setStatus(Status.COMPLETED);
+        foundTask.get().setTimeDone(LocalDateTime.now());
         taskRepository.save(foundTask.get());
-        return map(foundTask.get());
+        return mapTaskDone(foundTask.get());
     }
     @Override
-    public CreateTaskResponse startedTask(StartedTaskRequest startedTaskRequest) {
+    public StartedTaskResponse startedTask(StartedTaskRequest startedTaskRequest) {
         if(startedTaskRequest.getId().trim().isEmpty())throw new InputMismatchException("Title not found");
         Optional<Task> foundTask =  taskRepository.findById(startedTaskRequest.getId());
         foundTask.get().setStatus(Status.STARTED);
+        foundTask.get().setTimeStarted(LocalDateTime.now());
         taskRepository.save(foundTask.get());
-        return mapTask(foundTask.get());
+        return mapStartedTask(foundTask.get());
+    }
+
+    @Override
+    public Task findTaskById(String id) {
+        return taskRepository.findTaskById(id);
+    }
+
+    @Override
+    public AssignTaskResponse assignTask(AssignTaskRequest assignTaskRequest) {
+        Task task = new Task();
+        task.setTitle(assignTaskRequest.getTitle());
+        task.setAuthor(assignTaskRequest.getAuthor());
+        task.setDescription(assignTaskRequest.getDescription());
+        task.setPriority(assignTaskRequest.getPriority());
+        task.setStatus(assignTaskRequest.getStatus());
+        taskRepository.save(task);
+        return mapAssignTask(task);
     }
 
     private static void validateTask(CreateTaskRequest createTaskRequest) {
@@ -185,4 +197,5 @@ public class TaskServicesImpl implements TaskServices{
         if(task.getTitle().trim().isEmpty())throw new InputMismatchException("Title not found");
         if(task.getAuthor().trim().isEmpty())throw new InputMismatchException("Invalid Input");
     }
+
 }

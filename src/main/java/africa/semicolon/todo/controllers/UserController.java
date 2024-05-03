@@ -4,7 +4,7 @@ import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.dtos.request.*;
 import africa.semicolon.todo.dtos.response.*;
 import africa.semicolon.todo.exceptions.TodoExceptions;
-import africa.semicolon.todo.services.TodoServices;
+import africa.semicolon.todo.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RequestMapping("/api/Todo")
 public class UserController {
     @Autowired
-    private TodoServices todoServices;
+    private UserServices todoServices;
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterUserRequest registerUserRequest){
         try{
@@ -64,7 +64,7 @@ public class UserController {
     @PostMapping("/started")
     public ResponseEntity<?> StartedTask(@RequestBody StartedTaskRequest taskRequest){
         try{
-            CreateTaskResponse result = todoServices.startedTask(taskRequest);
+            StartedTaskResponse result = todoServices.startedTask(taskRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions | InputMismatchException e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
@@ -74,7 +74,7 @@ public class UserController {
     @PostMapping("/inProgress")
     public ResponseEntity<?> taskInProgress(@RequestBody TaskInProgressRequest inProgressRequest){
         try{
-            TaskResponse result = todoServices.taskInProgress(inProgressRequest);
+            TaskInProgressResponse result = todoServices.taskInProgress(inProgressRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions | InputMismatchException e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
@@ -84,7 +84,7 @@ public class UserController {
     @PostMapping("/completed")
     public ResponseEntity<?> taskCompleted(@RequestBody TaskCompletedRequest taskCompletedRequest){
         try{
-            TaskResponse result = todoServices.taskCompleted(taskCompletedRequest);
+            TaskDoneResponse result = todoServices.taskCompleted(taskCompletedRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions | InputMismatchException e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
@@ -93,7 +93,7 @@ public class UserController {
     @PostMapping("/update")
     public ResponseEntity<?> UpdateTask(@RequestBody UpdateTaskRequest updateRequest){
         try{
-            CreateTaskResponse result = todoServices.updateTask(updateRequest);
+            UpdateTaskResponse result = todoServices.updateTask(updateRequest);
             return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
         }catch (TodoExceptions | InputMismatchException e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
@@ -209,4 +209,14 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
+    @PostMapping("/assign")
+    public ResponseEntity<?> assignTask(@RequestBody AssignTaskRequest assignTaskRequest){
+        try{
+            AssignTaskResponse result = todoServices.assignTask(assignTaskRequest);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
+        }catch (TodoExceptions e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
 }
