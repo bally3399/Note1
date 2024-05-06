@@ -20,4 +20,6 @@ public class User {
     private LocalDateTime timeCreated = LocalDateTime.now();
     @DBRef
     private List<Task> tasks = new ArrayList<>();
+    @DBRef
+    private List<Notification> notifications = new ArrayList<>();
 }

@@ -1,5 +1,6 @@
 package africa.semicolon.todo.services;
 
+import africa.semicolon.todo.data.model.Notification;
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.data.model.User;
 import africa.semicolon.todo.data.repositories.TaskRepository;
@@ -22,6 +23,7 @@ import static africa.semicolon.todo.utils.Mapper.*;
     private final UserRepository userRepository;
     private final TaskServices taskServices;
     private final TaskRepository taskRepository;
+    private final NotificationServices notificationServices;
     @Override
     public UserResponse registerUser(RegisterUserRequest registerUserRequest) {
         String username = registerUserRequest.getUsername().toLowerCase();
@@ -206,6 +208,15 @@ import static africa.semicolon.todo.utils.Mapper.*;
         List<Task> tasks = user1.getTasks();
         tasks.add(task);
         user1.setTasks(tasks);
+        NotificationRequest request = new NotificationRequest();
+        request.setUsername(user.getUsername());
+        request.setTaskId(response.getId());
+        request.setMessage(user.getUsername() + "Assigned task to you");
+        var notResponse = notificationServices.sendNotification(request);
+        Notification notification = notificationServices.findNotificationById(notResponse.getNotificationId());
+        List<Notification> notifications = user1.getNotifications();
+        notifications.add(notification);
+        user1.setNotifications(notifications);
         userRepository.save(user1);
         return mapAssignTask(task);
     }

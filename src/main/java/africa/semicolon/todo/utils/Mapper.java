@@ -1,9 +1,11 @@
 package africa.semicolon.todo.utils;
 
+import africa.semicolon.todo.data.model.Notification;
 import africa.semicolon.todo.data.model.Status;
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.data.model.User;
 import africa.semicolon.todo.dtos.request.CreateTaskRequest;
+import africa.semicolon.todo.dtos.request.NotificationRequest;
 import africa.semicolon.todo.dtos.request.RegisterUserRequest;
 import africa.semicolon.todo.dtos.response.*;
 
@@ -121,4 +123,21 @@ public class Mapper {
         return response;
     }
 
+    public static Notification map(NotificationRequest notificationRequest){
+        Notification notification = new Notification();
+        notification.setReceiver(notificationRequest.getUsername());
+        notification.setMessage(notificationRequest.getMessage());
+        notification.setTaskId(notificationRequest.getTaskId());
+        notification.setTimestamp(LocalDateTime.now());
+        return notification;
+    }
+    public static NotificationResponse mapNotification(Notification notification){
+        NotificationResponse response = new NotificationResponse();
+        response.setTaskId(notification.getTaskId());
+        response.setMessage(notification.getMessage());
+        response.setUsername(notification.getReceiver());
+        response.setTimeStamp(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(notification.getTimestamp()));
+        response.setNotificationId(notification.getId());
+        return response;
+    }
 }
