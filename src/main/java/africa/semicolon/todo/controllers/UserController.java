@@ -16,7 +16,8 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
-@RequestMapping("/api/Todo")
+@RequestMapping("/api/User")
+@CrossOrigin(origins = "*")
 public class UserController {
     @Autowired
     private UserServices todoServices;
@@ -218,5 +219,25 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
+
+    @PostMapping("/deleteNot")
+    public ResponseEntity<?> deleteNotification(@RequestBody DeleteNotificationRequest notificationRequest){
+        try{
+            String result = todoServices.deleteNotification(notificationRequest);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
+        }catch (TodoExceptions e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+    @PostMapping("/view")
+    public ResponseEntity<?> viewNotification(@RequestBody ViewNotificationRequest viewNotificationRequest){
+        try{
+            ViewNotificationResponse result = todoServices.viewNotification(viewNotificationRequest);
+            return new ResponseEntity<>(new ApiResponse(true, result), CREATED);
+        }catch (TodoExceptions e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
 
 }

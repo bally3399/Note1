@@ -121,9 +121,9 @@ import static africa.semicolon.todo.utils.Mapper.*;
     }
     @Override
     public List<Task> getTaskFor(String user){
-        User todo = userRepository.findByUsername(user.toLowerCase());
-        if(!todo.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
-        return todo.getTasks();
+        User user1 = userRepository.findByUsername(user.toLowerCase());
+        if(!user1.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return taskServices.getTaskFor(user);
     }
 
     @Override
@@ -211,20 +211,36 @@ import static africa.semicolon.todo.utils.Mapper.*;
         NotificationRequest request = new NotificationRequest();
         request.setUsername(user.getUsername());
         request.setTaskId(response.getId());
-        request.setMessage(user.getUsername() + "Assigned task to you");
-        var notResponse = notificationServices.sendNotification(request);
+        request.setMessage(user1.getUsername()  + " assigned task to you");
+        NotificationResponse notResponse = notificationServices.sendNotification(request);
         Notification notification = notificationServices.findNotificationById(notResponse.getNotificationId());
-        List<Notification> notifications = user1.getNotifications();
+        List<Notification> notifications = user.getNotifications();
         notifications.add(notification);
-        user1.setNotifications(notifications);
-        userRepository.save(user1);
+        user.setNotifications(notifications);
+        userRepository.save(user);
         return mapAssignTask(task);
     }
+
+    @Override
+    public String deleteNotification(DeleteNotificationRequest notificationRequest) {
+        User user = userRepository.findByUsername(notificationRequest.getUsername());
+        if(!user.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return notificationServices.deleteNotification(notificationRequest);
+    }
+
+    @Override
+    public ViewNotificationResponse viewNotification(ViewNotificationRequest viewNotificationRequest) {
+        User user = userRepository.findByUsername(viewNotificationRequest.getUsername());
+        if(!user.isLoggedIn()) throw new UserAlreadyExistException("user must be loggedIn");
+        return notificationServices.viewNotification(viewNotificationRequest);
+    }
+
 
     private static void validateLogin(LoginUserRequest loginUserRequest) {
         if (!loginUserRequest.getUsername().matches("[a-zA-Z]+")) throw new UserAlreadyExistException("Invalid Input");
         if (loginUserRequest.getPassword().isEmpty())
             throw new IncorrectPassword("Invalid Password provide a Password");
     }
+
 
 }

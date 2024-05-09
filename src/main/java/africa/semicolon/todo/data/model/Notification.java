@@ -15,4 +15,5 @@ public class Notification {
     private String taskId;
     @Id
     private String id;
+    private boolean isSeen;
 }

@@ -52,4 +52,8 @@ public interface UserServices {
 
     AssignTaskResponse assignTask(AssignTaskRequest assignTaskRequest);
 
+    String deleteNotification(DeleteNotificationRequest notificationRequest);
+
+    ViewNotificationResponse viewNotification(ViewNotificationRequest viewNotificationRequest);
+
 }

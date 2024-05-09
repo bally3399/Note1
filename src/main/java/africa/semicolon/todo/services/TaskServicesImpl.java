@@ -146,6 +146,7 @@ public class TaskServicesImpl implements TaskServices{
     public TaskInProgressResponse taskInProgress(TaskInProgressRequest inProgressRequest) {
         if(inProgressRequest.getId().trim().isEmpty())throw new InputMismatchException("id not found");
         Optional<Task> foundTask =  taskRepository.findById(inProgressRequest.getId());
+        if(foundTask.get().getStatus() != Status.STARTED) throw new TaskNotFoundException("Task status must be started");
         foundTask.get().setStatus(Status.IN_PROGRESS);
         foundTask.get().setTimeInProgress(LocalDateTime.now());
         taskRepository.save(foundTask.get());
@@ -156,6 +157,7 @@ public class TaskServicesImpl implements TaskServices{
     public TaskDoneResponse taskCompleted(TaskCompletedRequest taskCompletedRequest) {
         if(taskCompletedRequest.getId().trim().isEmpty())throw new InputMismatchException("id not found");
         Optional<Task> foundTask =  taskRepository.findById(taskCompletedRequest.getId());
+        if(foundTask.get().getStatus() != Status.IN_PROGRESS) throw new TaskNotFoundException("Task status must be in progress");
         foundTask.get().setStatus(Status.COMPLETED);
         foundTask.get().setTimeDone(LocalDateTime.now());
         taskRepository.save(foundTask.get());
@@ -178,12 +180,7 @@ public class TaskServicesImpl implements TaskServices{
 
     @Override
     public AssignTaskResponse assignTask(AssignTaskRequest assignTaskRequest) {
-        Task task = new Task();
-        task.setTitle(assignTaskRequest.getTitle());
-        task.setAuthor(assignTaskRequest.getAuthor());
-        task.setDescription(assignTaskRequest.getDescription());
-        task.setPriority(assignTaskRequest.getPriority());
-        task.setStatus(assignTaskRequest.getStatus());
+        Task task = mapAssign(assignTaskRequest);
         taskRepository.save(task);
         return mapAssignTask(task);
     }

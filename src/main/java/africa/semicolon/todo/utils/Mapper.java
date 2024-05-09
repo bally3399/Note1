@@ -4,13 +4,13 @@ import africa.semicolon.todo.data.model.Notification;
 import africa.semicolon.todo.data.model.Status;
 import africa.semicolon.todo.data.model.Task;
 import africa.semicolon.todo.data.model.User;
-import africa.semicolon.todo.dtos.request.CreateTaskRequest;
-import africa.semicolon.todo.dtos.request.NotificationRequest;
-import africa.semicolon.todo.dtos.request.RegisterUserRequest;
+import africa.semicolon.todo.dtos.request.*;
 import africa.semicolon.todo.dtos.response.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Mapper {
     public static User map(RegisterUserRequest registerUserRequest) {
@@ -22,6 +22,7 @@ public class Mapper {
 
     public static UserResponse map(User savedTodo) {
         UserResponse response = new UserResponse();
+        response.setUsername(savedTodo.getUsername());
         response.setMessage("Successfully registered");
         return response;
     }
@@ -29,6 +30,15 @@ public class Mapper {
     public static LoginUserResponse mapLogin(User savedTodo) {
         LoginUserResponse response = new LoginUserResponse();
         response.setMessage("Successful");
+        response.setUsername(savedTodo.getUsername());
+        List<Notification> notifications =  savedTodo.getNotifications();
+        List<Notification> newNotifications = new ArrayList<>();
+        for (Notification notification : notifications) {
+            if(!notification.isSeen()){
+                newNotifications.add(notification);
+            }
+        }
+        response.setNotificationList(newNotifications);
         return response;
     }
 
@@ -122,6 +132,15 @@ public class Mapper {
         response.setId(savedTask.getId());
         return response;
     }
+    public static Task mapAssign(AssignTaskRequest assignTaskRequest){
+        Task task = new Task();
+        task.setTitle(assignTaskRequest.getTitle());
+        task.setAuthor(assignTaskRequest.getAuthor());
+        task.setDescription(assignTaskRequest.getDescription());
+        task.setPriority(assignTaskRequest.getPriority());
+        task.setStatus(assignTaskRequest.getStatus());
+        return task;
+    }
 
     public static Notification map(NotificationRequest notificationRequest){
         Notification notification = new Notification();
@@ -138,6 +157,22 @@ public class Mapper {
         response.setUsername(notification.getReceiver());
         response.setTimeStamp(DateTimeFormatter.ofPattern("dd-MM-yyyy, hh:mm:ss").format(notification.getTimestamp()));
         response.setNotificationId(notification.getId());
+        return response;
+    }
+
+    public static Notification mapView(ViewNotificationRequest request){
+        Notification notification = new Notification();
+        notification.setId(request.getNotificationId());
+        notification.setReceiver(request.getUsername());
+        return notification;
+    }
+    public static ViewNotificationResponse mapViewRes(Notification newNotification){
+        ViewNotificationResponse response = new ViewNotificationResponse();
+        response.setNotificationId(newNotification.getId());
+//        response.setTaskId(newNotification.getTaskId());
+        response.setMessage("Viewed");
+        response.setUsername(newNotification.getReceiver());
+        response.setTimeStamp(LocalDateTime.now());
         return response;
     }
 }
